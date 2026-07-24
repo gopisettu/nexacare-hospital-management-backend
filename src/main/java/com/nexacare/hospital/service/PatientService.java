@@ -14,6 +14,7 @@ import com.nexacare.hospital.repositories.UserRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -25,12 +26,15 @@ public class PatientService {
     private  final PatientRepository patientRepository;
     private final UserRepository userRepository;
     private  final PatientEntityMapper patientEntityMapper;
+    private  final PasswordEncoder passwordEncoder;
+
+
     public void registerPatient(PatientRegisterDto patientDto) {
         Patient patient=new Patient();
         User user=new User();
         //setting username,password and role
         user.setUsername(patientDto.username());
-        user.setPassword(patientDto.password());
+        user.setPassword(passwordEncoder.encode(patientDto.password()));
         user.setRole(Role.PATIENT);
         user =userRepository.save(user);
         //save the user
@@ -50,7 +54,7 @@ public class PatientService {
 
     public List<PatientResDto> getAllPatient(int page,int size) {
         Pageable pageable=PageRequest.of(page,size);
-        List<Patient> patientList=patientRepository.findAll(pageable).getContent();
+        List<Patient> patientList=patientRepository.findAllExceptDeactivePatient(pageable).getContent();
          return  patientList.stream()
                 .map((p)->patientEntityMapper.mapPatientEntityToDto(p))
                 .toList();

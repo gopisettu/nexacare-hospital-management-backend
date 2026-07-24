@@ -70,6 +70,8 @@ public class PatientController {
     public void deActivatePatient(@PathVariable String username){
         patientService.deActivatePatient(username);
     }
+
+
     @PostMapping("/book-doctorByPatient/{username}")
     public void bookDoctor(@PathVariable String username, @RequestBody BookAppointmentDto bookAppointmentDto){
         appointmentService.bookDoctor(username, bookAppointmentDto);
