@@ -12,6 +12,7 @@ import com.nexacare.hospital.enums.Specialization;
 import com.nexacare.hospital.service.AppointmentService;
 import com.nexacare.hospital.service.DoctorService;
 import com.nexacare.hospital.service.PatientService;
+import com.nexacare.hospital.service.PrescriptionService;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,6 +25,7 @@ public class PatientController {
     private final PatientService patientService;
     private final AppointmentService appointmentService;
     private final DoctorService doctorService;
+    private final PrescriptionService prescriptionService;
 /*
 {
     "username":"raja@gmail.com",
@@ -99,8 +101,10 @@ public class PatientController {
     public List<DoctorResDto> searchDoctorByDepartment(@PathVariable String username, @PathVariable Department department){
         return doctorService.searchDoctorByDepartment(username,department);
     }
-//    @GetMapping("/view-PrescriptionByPatient/{username}")
-//    public PrescriptionResDto viewPrescription(@PathVariable String username,@RequestParam Long appointmentId,)
+    @GetMapping("/view-PrescriptionByPatient/{username}")
+    public List<PrescriptionResDto> viewPrescription(@PathVariable String username,@RequestParam Long appointmentId){
+        return prescriptionService.viewPrescription(username,appointmentId);
+    }
 
 
 }

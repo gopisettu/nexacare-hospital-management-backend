@@ -1,0 +1,42 @@
+package com.nexacare.hospital.service;
+
+import com.nexacare.hospital.controller.PrescriptionResDto;
+import com.nexacare.hospital.dto.request.PrescriptionItemDto;
+import com.nexacare.hospital.exception.ResourceNotFoundException;
+import com.nexacare.hospital.mapper.PrescriptionMapper;
+import com.nexacare.hospital.mapper.entitytodto.PrescriptionItemToDtoMapper;
+import com.nexacare.hospital.model.Appointment;
+import com.nexacare.hospital.model.PrescriptionItem;
+import com.nexacare.hospital.model.User;
+import com.nexacare.hospital.repositories.AppointmentRepository;
+import com.nexacare.hospital.repositories.PatientRepository;
+import com.nexacare.hospital.repositories.PrescriptionItemRepository;
+import com.nexacare.hospital.repositories.UserRepository;
+import lombok.AllArgsConstructor;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+
+@Service
+@AllArgsConstructor
+public class PrescriptionService {
+    private  final PatientRepository patientRepository;
+    private final UserRepository userRepository;
+    private  final PrescriptionItemRepository prescriptionItemRepository;
+    private  final AppointmentRepository appointmentRepository;
+    private final PrescriptionItemToDtoMapper prescriptionItemToDtoMapper;
+    public List<PrescriptionResDto> viewPrescription(String username, Long appointmentId) {
+        User user=userRepository.findByUsername(username)
+                .orElseThrow(()->new ResourceNotFoundException("Patient Not Found"));
+        Appointment appointment=appointmentRepository.findById(appointmentId)
+                .orElseThrow(()->new ResourceNotFoundException("Appointment Not Found"));
+
+
+            List<PrescriptionItem> prescriptionItem=prescriptionItemRepository.findPrescriptionByAppointmentId(appointmentId);
+
+        return
+                prescriptionItem.stream()
+                                .map((p)->prescriptionItemToDtoMapper.mapPrescriptionEntityToDto(p))
+                                        .toList();
+    }
+}
