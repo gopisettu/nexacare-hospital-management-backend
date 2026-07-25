@@ -6,6 +6,9 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class PatientDtoMapper {
+    private PatientDtoMapper() {
+        throw new IllegalStateException("Utility class");
+    }
  public static Patient mapDtoToPatient(PatientProfileDto patientProfileDto,Patient patient){
 
      patient.setFirstName(patientProfileDto.firstName());

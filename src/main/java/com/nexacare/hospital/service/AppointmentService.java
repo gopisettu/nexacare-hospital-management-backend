@@ -31,6 +31,7 @@ private  final AppointmentEntityToDto appointmentEntityToDto;
 private final PrescriptionMapper prescriptionMapper;
 private final MedicineRepository medicineRepository;
 private  final PrescriptionItemRepository prescriptionItemRepository;
+    private static final String DOCTOR_NOT_FOUND = "Doctor not found";
     public void bookDoctor(String username, BookAppointmentDto dto) {
         log.info("Patient '{}' is attempting to book an appointment with doctor ID {} on {} at {}",
                 username,
@@ -44,7 +45,7 @@ private  final PrescriptionItemRepository prescriptionItemRepository;
                 .orElseThrow(() -> new ResourceNotFoundException("Patient not found"));
 
         Doctor doctor = doctorRepository.findById(dto.doctorId())
-                .orElseThrow(() -> new ResourceNotFoundException("Doctor not found"));
+                .orElseThrow(() -> new ResourceNotFoundException(DOCTOR_NOT_FOUND));
 
         // Check if the doctor already has an appointment for the same date and time
         boolean conflict = appointmentRepository.countConflictingAppointments(
@@ -100,7 +101,7 @@ private  final PrescriptionItemRepository prescriptionItemRepository;
 //step1 : check valid doctor
         Doctor doctor = doctorRepository.findByUserUsername(username)
                 .orElseThrow(() ->
-                        new ResourceNotFoundException("Doctor not found"));
+                        new ResourceNotFoundException(DOCTOR_NOT_FOUND));
 
 //       step 2:get for appointment for patch update
         Appointment appointment=appointmentRepository.findById(updateAppointmentStatusDto.appointmentId())
@@ -131,7 +132,7 @@ private  final PrescriptionItemRepository prescriptionItemRepository;
 //step1 : check valid doctor
         Doctor doctor = doctorRepository.findByUserUsername(username)
                 .orElseThrow(() ->
-                        new ResourceNotFoundException("Doctor not found"));
+                        new ResourceNotFoundException(DOCTOR_NOT_FOUND));
 //       step 2:get for appointment for patch update
         Appointment appointment=appointmentRepository.findById(rescheduleAppointmentDto.appointmentId())
                 .orElseThrow(()->new ResourceNotFoundException("Appointment Id not Found"));
@@ -164,7 +165,7 @@ private  final PrescriptionItemRepository prescriptionItemRepository;
         // Validate doctor
         Doctor doctor = doctorRepository.findByUserUsername(username)
                 .orElseThrow(() ->
-                        new ResourceNotFoundException("Doctor not found"));
+                        new ResourceNotFoundException(DOCTOR_NOT_FOUND));
 
         // Validate appointment
         Appointment appointment = appointmentRepository

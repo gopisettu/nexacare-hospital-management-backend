@@ -26,12 +26,7 @@ public class PatientController {
     private final AppointmentService appointmentService;
     private final DoctorService doctorService;
     private final PrescriptionService prescriptionService;
-/*
-{
-    "username":"raja@gmail.com",
-    "password":"raja@123"
-}
- */
+
     @PostMapping("/register-patient")
     public void registerPatient(@RequestBody LoginDto loginDto){
          patientService.registerPatient(loginDto);
@@ -43,21 +38,6 @@ public class PatientController {
   }
 
 
-/*
-{
-  "firstName": "Arun",
-  "lastName": "Kumar",
-  "gender": "MALE",
-  "phone": "9876543210",
-  "email": "arun.kumar@nexacare.com",
-  "address": "No. 45, Anna Nagar, Chennai, Tamil Nadu",
-  "qualification": "MBBS",
-  "department": "CARDIOLOGY",
-  "specialization": "CARDIOLOGIST",
-  "totalExperienceYear": 12,
-  "consultationFee": 750.0
-}
- */
     @PutMapping("/update-patientProfile/{username}")
     public void updateProfile(@RequestBody PatientProfileDto patientProfileDto, @PathVariable String username){
         patientService.updateProfile(patientProfileDto,username);

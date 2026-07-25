@@ -10,7 +10,7 @@ import java.util.List;
 public class PatientEntityMapper {
     public PatientResDto mapPatientEntityToDto(Patient patinet){
 
-        PatientResDto patientResDto=new PatientResDto
+       return  new PatientResDto
                 (patinet.getId(),
                         patinet.getUser().getUsername(),
                         patinet.getFirstName(),
@@ -26,7 +26,7 @@ public class PatientEntityMapper {
                         patinet.getChronicDisease()
                 );
 
-        return patientResDto;
+
 
     }
 }

@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 public class AppointmentEntityToDto {
 
     public AppointmentResDto mapAppointmentEntityToDto(Appointment appointment){
-        AppointmentResDto appointmentResDto=new AppointmentResDto(
+       return  new AppointmentResDto(
                 appointment.getPatient().getId(),
                 appointment.getAppointmentDate(),
                 appointment.getAppointmentTime(),
@@ -21,6 +21,6 @@ public class AppointmentEntityToDto {
                 appointment.getId()
 
         );
-        return appointmentResDto;
+
     }
 }
