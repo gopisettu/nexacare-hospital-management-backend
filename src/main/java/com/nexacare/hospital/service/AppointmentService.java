@@ -11,6 +11,7 @@ import com.nexacare.hospital.model.*;
 import com.nexacare.hospital.repositories.*;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -19,6 +20,7 @@ import java.util.List;
 
 @Service
 @AllArgsConstructor
+@Slf4j
 public class AppointmentService {
     private  final UserRepository userRepository;
     private  final PatientRepository patientRepository;
@@ -30,7 +32,11 @@ private final PrescriptionMapper prescriptionMapper;
 private final MedicineRepository medicineRepository;
 private  final PrescriptionItemRepository prescriptionItemRepository;
     public void bookDoctor(String username, BookAppointmentDto dto) {
-
+        log.info("Patient '{}' is attempting to book an appointment with doctor ID {} on {} at {}",
+                username,
+                dto.doctorId(),
+                dto.appointmentDate(),
+                dto.appointmentTime());
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new ResourceNotFoundException("Patient username not found"));
 
@@ -47,6 +53,11 @@ private  final PrescriptionItemRepository prescriptionItemRepository;
                 dto.appointmentTime()) > 0;
 
         if (conflict) {
+            log.warn("Booking conflict: Doctor ID {} is already booked on {} at {}",
+                    doctor.getId(),
+                    dto.appointmentDate(),
+                    dto.appointmentTime());
+
             throw new DoctorAlreadyBookedException("Doctor already booked.");
         }
 
@@ -57,6 +68,11 @@ private  final PrescriptionItemRepository prescriptionItemRepository;
         appointment.setAppointmentStatus(AppointmentStatus.PENDING);
 
         appointmentRepository.save(appointment);
+
+        log.info("Appointment booked successfully. Patient ID: {}, Doctor ID: {}, Appointment ID: {}",
+                patient.getId(),
+                doctor.getId(),
+                appointment.getId());
     }
 
     // Doctor views appointments
@@ -85,17 +101,29 @@ private  final PrescriptionItemRepository prescriptionItemRepository;
         Doctor doctor = doctorRepository.findByUserUsername(username)
                 .orElseThrow(() ->
                         new ResourceNotFoundException("Doctor not found"));
+
 //       step 2:get for appointment for patch update
         Appointment appointment=appointmentRepository.findById(updateAppointmentStatusDto.appointmentId())
                 .orElseThrow(()->new ResourceNotFoundException("Appointment Id not Found"));
+    log.info("Doctor '{}' is updating appointment {} to status {}",
+            username,
+            updateAppointmentStatusDto.appointmentId(),
+            updateAppointmentStatusDto.appointmentStatus());
 // step 3. check for the particular appointment belong to the doctor
         if( ! appointment.getDoctor().getId().equals(doctor.getId())){
+            log.warn("Unauthorized update attempt. Doctor '{}' tried to update appointment {}",
+                    username,
+                    appointment.getId());
             throw  new UnauthorizedOperationException("You are not authorized to update this appointment");
         }
 //        step 4: update the appointment status as per the dto
         appointment.setAppointmentStatus(updateAppointmentStatusDto.appointmentStatus());
 //        step 5: save the appointment
         appointmentRepository.save(appointment);
+
+    log.info("Appointment {} status updated to {}",
+            appointment.getId(),
+            appointment.getAppointmentStatus());
 
     }
 @Transactional
@@ -113,6 +141,8 @@ private  final PrescriptionItemRepository prescriptionItemRepository;
         }
 //        step 4:Check for update status for Already Completed Appointment
         if(appointment.getAppointmentStatus()== AppointmentStatus.COMPLETED){
+            log.warn("Reschedule rejected because appointment {} is already completed.",
+                    appointment.getId());
             throw new InvalidAppointmentStateException("Unable to update status for Already CompletedAppointment");
         }
 //        step5: update the appointment and save it
@@ -120,6 +150,11 @@ private  final PrescriptionItemRepository prescriptionItemRepository;
         appointment.setAppointmentDate(rescheduleAppointmentDto.appointmentDate());
         appointment.setAppointmentStatus(rescheduleAppointmentDto.appointmentStatus());
         appointmentRepository.save(appointment);
+
+    log.info("Appointment {} rescheduled to {} {}",
+            appointment.getId(),
+            appointment.getAppointmentDate(),
+            appointment.getAppointmentTime());
     }
 
     @Transactional
@@ -139,12 +174,17 @@ private  final PrescriptionItemRepository prescriptionItemRepository;
 
         // Appointment belongs to logged-in doctor
         if (!appointment.getDoctor().getId().equals(doctor.getId())) {
+            log.warn("Unauthorized prescription attempt by doctor '{}' for appointment {}",
+                    username,
+                    appointment.getId());
             throw new UnauthorizedOperationException(
                     "You are not authorized to prescribe for this appointment.");
         }
 
         // Optional: appointment status validation
         if (appointment.getAppointmentStatus() != AppointmentStatus.COMPLETED) {
+            log.warn("Prescription rejected because appointment {} is not completed.",
+                    appointment.getId());
             throw new IllegalOperationException(
                     "Prescription can only be submitted after the appointment is completed.");
         }
@@ -172,6 +212,8 @@ private  final PrescriptionItemRepository prescriptionItemRepository;
             item.setMedicine(medicine);
 
             prescriptionItemRepository.save(item);
+            log.info("Prescription submitted successfully for appointment {}",
+                    appointment.getId());
         }
     }
 }

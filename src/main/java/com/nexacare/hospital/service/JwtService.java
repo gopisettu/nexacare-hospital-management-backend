@@ -1,6 +1,10 @@
 package com.nexacare.hospital.service;
 
 import com.nexacare.hospital.dto.response.TokenDto;
+
+
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import io.jsonwebtoken.Claims;
@@ -16,21 +20,23 @@ import java.util.Map;
 import java.util.function.Function;
 
 @Service
+@Slf4j
 public class JwtService {
+    @Value("${jwt.secret-key}")
+    private String secretKey;
 
 
-
-    private static final String SECRET_KEY =
-            "mysecretkeymysecretkeymysecretkey12";
 
     private SecretKey getKey() {
-        return Keys.hmacShaKeyFor(SECRET_KEY.getBytes(StandardCharsets.UTF_8));
+        return Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8));
     }
 
+
     public TokenDto generateToken(String username) {
+        log.info("Generating JWT token for user '{}'.", username);
 
         Map<String, Object> claims = new HashMap<>();
-        Date expiryDate = new Date(System.currentTimeMillis() + 1000L * 60 * 30);
+        Date expiryDate = new Date(System.currentTimeMillis() + 1000L* 60 * 60*60);
         String token=Jwts.builder()
                 .claims(claims)
                 .subject(username)
@@ -38,6 +44,7 @@ public class JwtService {
                 .expiration(expiryDate)
                 .signWith(getKey())
                 .compact();
+        log.info("JWT token generated successfully for user '{}'.", username);
         return new TokenDto(
                 token,
                 expiryDate
@@ -64,6 +71,15 @@ public class JwtService {
 
     public boolean validateToken(String token, UserDetails userDetails) {
         String username = extractUsername(token);
+        boolean valid =
+                username.equals(userDetails.getUsername())
+                        && !isTokenExpired(token);
+
+        if (valid) {
+            log.info("JWT validated successfully for user '{}'.", username);
+        } else {
+            log.warn("JWT validation failed for user '{}'.", username);
+        }
         return username.equals(userDetails.getUsername())
                 && !isTokenExpired(token);
     }

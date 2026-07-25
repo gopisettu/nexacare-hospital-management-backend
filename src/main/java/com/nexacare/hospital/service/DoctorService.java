@@ -17,6 +17,7 @@ import com.nexacare.hospital.repositories.DoctorRepository;
 import com.nexacare.hospital.repositories.UserRepository;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -26,6 +27,7 @@ import java.util.List;
 
 @Service
 @AllArgsConstructor
+@Slf4j
 public class DoctorService {
     private final DoctorRepository doctorRepository;
     private final UserRepository userRepository;
@@ -35,7 +37,9 @@ public class DoctorService {
     private  final PasswordEncoder passwordEncoder;
 
     public TokenDto loginDoctor(LoginDto loginDto) {
+        log.info("Doctor '{}' logged in successfully.", loginDto.username());
         return jwtService.generateToken(loginDto.username());
+
     }
     public void registerDoctor(@Valid LoginDto loginDto) {
 
@@ -53,6 +57,7 @@ public class DoctorService {
         doctor.setUser(user);
 
         doctorRepository.save(doctor);
+        log.info("Doctor '{}' Registered Successfully",user.getUsername());
 
     }
 
@@ -65,16 +70,19 @@ public class DoctorService {
                         new ResourceNotFoundException("Doctor not found"));
 doctor= DoctorMapper.mapDtotoDoctorEntity(doctorProfileDto,doctor);
 doctorRepository.save(doctor);
+        log.info("Doctor '{}' updated profile successfully.", username);
 
     }
 
     public List<DoctorResDto> getAllDoctor(Integer page,Integer size) {
         Pageable pageable=PageRequest.of(page,size);
       List<Doctor> doctor = doctorRepository.findAll(pageable).getContent();
+        log.info("Retrieved {} doctor(s).", doctor.size());
       return  doctor.
               stream()
               .map((d)->doctorDtoMapper.mapDoctorEntityToDto(d))
               .toList();
+
 
     }
 
@@ -83,6 +91,7 @@ doctorRepository.save(doctor);
                 .orElseThrow(()->new ResourceNotFoundException("Doctor Username Not found"));
         Doctor doctor=doctorRepository.findByUserId(user.getId())
                 .orElseThrow(()->new ResourceNotFoundException("Doctor userId not found"));
+        log.info("Doctor profile retrieved successfully for '{}'.", username);
         return  doctorDtoMapper.mapDoctorEntityToDto(doctor);
 
     }
@@ -92,6 +101,7 @@ doctorRepository.save(doctor);
                 .orElseThrow(()->new ResourceNotFoundException("Doctor UserName not found"));
         user.setActive(false);
         userRepository.save(user);
+        log.info("Doctor '{}' deactivated successfully.", username);
     }
 
 
@@ -100,9 +110,13 @@ doctorRepository.save(doctor);
                  .orElseThrow(()->new ResourceNotFoundException("Doctor username not found"));
         List<Doctor> doctorList=doctorRepository.searchDoctorBySpecialization(specialization);
         if (doctorList.isEmpty()) {
+            log.warn("No doctors found for specialization '{}'.", specialization);
             throw new ResourceNotFoundException(
                     "No doctors found for specialization: " + specialization);
         }
+        log.info("Found {} doctor(s) for specialization '{}'.",
+                doctorList.size(),
+                specialization);
          return  doctorList
                 .stream()
                 .map((d)->doctorDtoMapper.mapDoctorEntityToDto(d))
@@ -116,9 +130,13 @@ doctorRepository.save(doctor);
 
         List<Doctor> doctorList=doctorRepository.searchDoctorByDepartment(department);
         if (doctorList.isEmpty()) {
+            log.warn("No doctors found in department '{}'.", department);
             throw new ResourceNotFoundException(
                     "No doctors found for Department: " + department);
         }
+        log.info("Found {} doctor(s) in department '{}'.",
+                doctorList.size(),
+                department);
         return  doctorList
                 .stream()
                 .map((d)->doctorDtoMapper.mapDoctorEntityToDto(d))

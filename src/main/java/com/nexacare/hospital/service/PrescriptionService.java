@@ -13,12 +13,14 @@ import com.nexacare.hospital.repositories.PatientRepository;
 import com.nexacare.hospital.repositories.PrescriptionItemRepository;
 import com.nexacare.hospital.repositories.UserRepository;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
 @AllArgsConstructor
+@Slf4j
 public class PrescriptionService {
     private  final PatientRepository patientRepository;
     private final UserRepository userRepository;
@@ -27,16 +29,26 @@ public class PrescriptionService {
     private final PrescriptionItemToDtoMapper prescriptionItemToDtoMapper;
     public List<PrescriptionResDto> viewPrescription(String username, Long appointmentId) {
         User user=userRepository.findByUsername(username)
-                .orElseThrow(()->new ResourceNotFoundException("Patient Not Found"));
+                .orElseThrow(()->{
+                    log.warn("User '{}' not found during authentication.", username);
+                   return new ResourceNotFoundException("Patient Not Found");
+
+                        }
+                );
+
         Appointment appointment=appointmentRepository.findById(appointmentId)
-                .orElseThrow(()->new ResourceNotFoundException("Appointment Not Found"));
+                .orElseThrow(()->
+                {log.warn("Appointment Not found for the id",appointmentId);
+                    return  new ResourceNotFoundException("Appointment Not Found");
+                });
 
 
             List<PrescriptionItem> prescriptionItem=prescriptionItemRepository.findPrescriptionByAppointmentId(appointmentId);
-
+        log.warn("Prescription Successfully Reterived  for the Patient",username);
         return
                 prescriptionItem.stream()
                                 .map((p)->prescriptionItemToDtoMapper.mapPrescriptionEntityToDto(p))
                                         .toList();
+
     }
 }

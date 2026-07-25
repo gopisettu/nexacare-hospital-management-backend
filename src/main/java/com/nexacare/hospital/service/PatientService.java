@@ -13,6 +13,7 @@ import com.nexacare.hospital.model.User;
 import com.nexacare.hospital.repositories.PatientRepository;
 import com.nexacare.hospital.repositories.UserRepository;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -22,6 +23,7 @@ import java.util.List;
 
 @Service
 @AllArgsConstructor
+@Slf4j
 
 public class PatientService {
     private  final PatientRepository patientRepository;
@@ -31,6 +33,8 @@ public class PatientService {
 
 private  final JwtService jwtService;
     public TokenDto loginPatient(LoginDto loginDto) {
+
+        log.info("Patient '{}' logged in successfully.", loginDto.username());
         return jwtService.generateToken(loginDto.username());
     }
 
@@ -46,6 +50,9 @@ private  final JwtService jwtService;
         patient.setUser(user);
         //attach the user to the doctor
         patientRepository.save(patient);
+        log.info("Patient registered successfully. User ID: {}, Patient ID: {}",
+                user.getId(),
+                patient.getId());
 
 
 
@@ -59,11 +66,15 @@ private  final JwtService jwtService;
          Patient patient=patientRepository.findByUserId(user.getId()).orElseThrow(()-> new ResourceNotFoundException("Patient Id not found"));
                patient= PatientDtoMapper.mapDtoToPatient(patientProfileDto,patient);
          patientRepository.save(patient);
+        patientRepository.save(patient);
+
+        log.info("Patient '{}' updated profile successfully.", username);
     }
 
     public List<PatientResDto> getAllPatient(int page,int size) {
         Pageable pageable=PageRequest.of(page,size);
         List<Patient> patientList=patientRepository.findAllExceptDeactivePatient(pageable).getContent();
+        log.info("Retrieved {} patient(s).", patientList.size());
          return  patientList.stream()
                 .map((p)->patientEntityMapper.mapPatientEntityToDto(p))
                 .toList();
@@ -80,6 +91,7 @@ private  final JwtService jwtService;
                 .orElseThrow(() ->
                         new ResourceNotFoundException("Patient not found"));
 
+        log.info("Patient profile retrieved successfully for '{}'.", username);
         return patientEntityMapper.mapPatientEntityToDto(patient);
     }
 
@@ -88,6 +100,9 @@ private  final JwtService jwtService;
                         .orElseThrow(()->new ResourceNotFoundException("User nameName not found"));
        user.setActive(false);
         userRepository.save(user);
+        userRepository.save(user);
+
+        log.info("Patient '{}' deactivated successfully.", username);
     }
 
 

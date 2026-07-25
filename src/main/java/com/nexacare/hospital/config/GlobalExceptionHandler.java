@@ -2,6 +2,8 @@ package com.nexacare.hospital.config;
 
 import com.nexacare.hospital.dto.response.ErrorMessageDto;
 import com.nexacare.hospital.exception.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -16,15 +18,23 @@ import java.util.Map;
 
 
 public class GlobalExceptionHandler {
+    private static final Logger logger =
+            LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
     @ExceptionHandler(SQLIntegrityConstraintViolationException.class)
     public ResponseEntity<ErrorMessageDto>handleSQLIntegrityConstraintViolationException(SQLIntegrityConstraintViolationException e){
-return  ResponseEntity
+
+        logger.error("SQL Integrity Constraint Violation: {}", e.getMessage(), e);
+        return  ResponseEntity
         .badRequest()
+
         .body(new ErrorMessageDto("UserName Already Exists !"));
     }
     @ExceptionHandler(ResourceNotFoundException.class)
     public ResponseEntity<String> handleResourceNotFoundException(ResourceNotFoundException e){
+
+        logger.warn("Resource not found: {}", e.getMessage());
+
         return  ResponseEntity
                 .badRequest()
                 .body(e.getMessage());
@@ -41,12 +51,14 @@ return  ResponseEntity
                 .getFieldErrors()
                 .forEach(err ->
                         errors.put(err.getField(), err.getDefaultMessage()));
+        logger.warn("Validation failed: {}", errors);
 
         return ResponseEntity.badRequest().body(errors);
     }
     @ExceptionHandler(UnauthorizedOperationException.class)
     public ResponseEntity<ErrorMessageDto> handleUnauthorizedOperationException(
             UnauthorizedOperationException ex) {
+        logger.warn("Unauthorized operation: {}", ex.getMessage());
 
         return ResponseEntity
                 .status(HttpStatus.FORBIDDEN)
@@ -54,12 +66,14 @@ return  ResponseEntity
     }
     @ExceptionHandler(InvalidAppointmentStateException.class)
     public ResponseEntity<ErrorMessageDto>handleInvalidAppointmentStateException(InvalidAppointmentStateException e){
+        logger.warn("Invalid appointment state: {}", e.getMessage());
         return  ResponseEntity
                 .badRequest()
                 .body(new ErrorMessageDto(e.getMessage()));
     }
     @ExceptionHandler(DoctorAlreadyBookedException.class)
     public ResponseEntity<ErrorMessageDto>handleDoctorAlreadyBookedException(DoctorAlreadyBookedException e){
+        logger.warn("Doctor already booked: {}", e.getMessage());
         return  ResponseEntity
                 .badRequest()
                 .body(new ErrorMessageDto(e.getMessage()));
@@ -67,6 +81,8 @@ return  ResponseEntity
 
     @ExceptionHandler(IllegalOperationException.class)
     public ResponseEntity<ErrorMessageDto> handleIllegalOperationException(IllegalOperationException e){
+
+        logger.warn("Illegal operation: {}", e.getMessage());
         return  ResponseEntity
                 .badRequest()
                 .body(new ErrorMessageDto(e.getMessage()));

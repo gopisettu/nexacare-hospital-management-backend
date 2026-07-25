@@ -10,11 +10,13 @@ import com.nexacare.hospital.repositories.StaffRepository;
 import com.nexacare.hospital.repositories.UserRepository;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
 @AllArgsConstructor
+@Slf4j
 public class StaffService {
     private final PasswordEncoder passwordEncoder;
     private  final UserRepository userRepository;
@@ -30,6 +32,7 @@ public class StaffService {
         staff.setFull_name(loginDto.username());
         staff.setRole(Role.STAFF);
         staffRepository.save(staff);
+        log.info("Staff Successfully Registedred  ");
 
     }
 
