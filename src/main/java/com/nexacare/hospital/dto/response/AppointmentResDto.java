@@ -12,6 +12,10 @@ public record AppointmentResDto(
         LocalTime appointmentTime,
         Reason reason,
         String notes,
-        AppointmentStatus appointmentStatus
+        AppointmentStatus appointmentStatus,
+        Long doctorId,
+        String doctorName,
+        String patientName,
+        Long appointmentId
 ) {
 }

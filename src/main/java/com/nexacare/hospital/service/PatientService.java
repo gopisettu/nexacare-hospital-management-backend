@@ -1,8 +1,8 @@
 package com.nexacare.hospital.service;
 
+import com.nexacare.hospital.dto.request.LoginDto;
 import com.nexacare.hospital.dto.request.PatientProfileDto;
 import com.nexacare.hospital.dto.request.PatientRegisterDto;
-import com.nexacare.hospital.dto.request.UserLoginDto;
 import com.nexacare.hospital.dto.response.PatientResDto;
 import com.nexacare.hospital.dto.response.TokenDto;
 import com.nexacare.hospital.enums.Role;
@@ -31,8 +31,8 @@ public class PatientService {
     private  final PasswordEncoder passwordEncoder;
 
 private  final JwtService jwtService;
-    public TokenDto loginPatient(PatientRegisterDto patientRegisterDto) {
-        return jwtService.generateToken(patientRegisterDto);
+    public TokenDto loginPatient(LoginDto loginDto) {
+        return jwtService.generateToken(loginDto.username());
     }
 
     public void registerPatient(PatientRegisterDto patientDto) {

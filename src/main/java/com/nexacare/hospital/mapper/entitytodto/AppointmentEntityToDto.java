@@ -14,7 +14,12 @@ public class AppointmentEntityToDto {
                 appointment.getAppointmentTime(),
                 appointment.getReason(),
                 appointment.getNotes(),
-                appointment.getAppointmentStatus()
+                appointment.getAppointmentStatus(),
+                appointment.getDoctor().getId(),
+                appointment.getDoctor().getFirstName(),
+                appointment.getPatient().getFirstName(),
+                appointment.getId()
+
         );
         return appointmentResDto;
     }

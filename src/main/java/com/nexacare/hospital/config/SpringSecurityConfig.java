@@ -28,10 +28,27 @@ public class SpringSecurityConfig {
         http
                 .csrf((c)->c.disable())
                 .authorizeHttpRequests((auth)->
-                auth    .requestMatchers(HttpMethod.POST,"/api/patient/register-patient").permitAll()
-                        .requestMatchers(HttpMethod.GET,"/api/patient/get-allPatient").hasAuthority(Role.PATIENT.toString())
-                        .requestMatchers(HttpMethod.GET,"/api/doctor/get-allDoctor").permitAll()
+                auth  .requestMatchers(HttpMethod.POST, "/api/patient/register-patient").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/patient/loginPatient").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/patient/get-allPatient").hasAnyAuthority(Role.DOCTOR.toString(),Role.STAFF.toString())
+                        .requestMatchers(HttpMethod.GET, "/api/patient/get-ByUserName/**").hasAnyAuthority(Role.DOCTOR.toString(),Role.STAFF.toString())
+                        .requestMatchers(HttpMethod.PUT, "/api/patient/update-patientProfile/**").hasAuthority(Role.PATIENT.toString())
+                        .requestMatchers(HttpMethod.PUT, "/api/patient/deActivate-ByPatient/**").hasAuthority(Role.EXECUTIVE.toString())
+                        .requestMatchers(HttpMethod.GET, "/api/patient/searchDoctor-bySpecialization/**").hasAuthority(Role.PATIENT.toString())
+                        .requestMatchers(HttpMethod.GET, "/api/patient/searchDoctor-byDepartment/**").hasAuthority(Role.PATIENT.toString())
+                        .requestMatchers(HttpMethod.POST, "/api/patient/book-doctorByPatient/**").hasAuthority(Role.PATIENT.toString())
+                        .requestMatchers(HttpMethod.GET, "/api/patient/getAppointment-ByPatient/**").hasAuthority(Role.PATIENT.toString())
+
+                        .requestMatchers(HttpMethod.POST, "/api/doctor/register-doctor").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/doctor/loginDoctor").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/doctor/get-allDoctor").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/doctor/get-ByUsername/**").hasAuthority(Role.DOCTOR.toString())
+                        .requestMatchers(HttpMethod.PUT, "/api/doctor/update-doctorProfile/**").hasAuthority(Role.DOCTOR.toString())
+                        .requestMatchers(HttpMethod.PUT, "/api/doctor/deActivate-ByDoctor/**").hasAuthority(Role.EXECUTIVE.toString())
+                        .requestMatchers(HttpMethod.GET, "/api/doctor/allAppointment-ByDoctor/**").hasAuthority(Role.DOCTOR.toString())
+                        .requestMatchers(HttpMethod.PATCH, "/api/doctor/rescheduleAppointment-ByDoctor/**").hasAuthority(Role.DOCTOR.toString())
+                        .requestMatchers(HttpMethod.PATCH, "/api/doctor/updateAppointmentStatus-ByDoctor/**").hasAuthority(Role.DOCTOR.toString())
+                        .requestMatchers(HttpMethod.POST, "/api/doctor/submitPrescription-byDoctor/**").hasAuthority(Role.DOCTOR.toString())
 
                 );
         http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);

@@ -1,10 +1,7 @@
 package com.nexacare.hospital.config;
 
 import com.nexacare.hospital.dto.response.ErrorMessageDto;
-import com.nexacare.hospital.exception.DoctorAlreadyBookedException;
-import com.nexacare.hospital.exception.InvalidAppointmentStateException;
-import com.nexacare.hospital.exception.ResourceNotFoundException;
-import com.nexacare.hospital.exception.UnauthorizedOperationException;
+import com.nexacare.hospital.exception.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -68,5 +65,11 @@ return  ResponseEntity
                 .body(new ErrorMessageDto(e.getMessage()));
     }
 
+    @ExceptionHandler(IllegalOperationException.class)
+    public ResponseEntity<ErrorMessageDto> handleIllegalOperationException(IllegalOperationException e){
+        return  ResponseEntity
+                .badRequest()
+                .body(new ErrorMessageDto(e.getMessage()));
+    }
 
 }

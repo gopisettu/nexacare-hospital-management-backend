@@ -2,8 +2,10 @@ package com.nexacare.hospital.service;
 
 import com.nexacare.hospital.dto.request.DoctorProfileDto;
 import com.nexacare.hospital.dto.request.DoctorRegisterDto;
+import com.nexacare.hospital.dto.request.LoginDto;
 import com.nexacare.hospital.dto.response.AppointmentResDto;
 import com.nexacare.hospital.dto.response.DoctorResDto;
+import com.nexacare.hospital.dto.response.TokenDto;
 import com.nexacare.hospital.enums.Department;
 import com.nexacare.hospital.enums.Role;
 import com.nexacare.hospital.enums.Specialization;
@@ -21,6 +23,7 @@ import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -33,13 +36,19 @@ public class DoctorService {
     private final UserRepository userRepository;
     private  final DoctorDtoMapper doctorDtoMapper;
     private final AppointmentEntityToDto appointmentEntityToDto;
+    private  final JwtService jwtService;
+    private  final PasswordEncoder passwordEncoder;
+
+    public TokenDto loginDoctor(LoginDto loginDto) {
+        return jwtService.generateToken(loginDto.username());
+    }
     public void registerDoctor(@Valid DoctorRegisterDto doctorRegisterDto) {
 
         Doctor doctor = new Doctor();
         User user = new User();
 
         user.setUsername(doctorRegisterDto.username());
-        user.setPassword(doctorRegisterDto.password());
+        user.setPassword(passwordEncoder.encode(doctorRegisterDto.password()));
         user.setRole(Role.DOCTOR);
 
         user = userRepository.save(user);
@@ -120,4 +129,6 @@ doctorRepository.save(doctor);
                 .map((d)->doctorDtoMapper.mapDoctorEntityToDto(d))
                 .toList();
     }
+
+
 }

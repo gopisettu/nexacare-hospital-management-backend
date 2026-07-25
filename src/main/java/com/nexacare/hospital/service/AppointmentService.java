@@ -3,15 +3,13 @@ package com.nexacare.hospital.service;
 import com.nexacare.hospital.dto.request.*;
 import com.nexacare.hospital.dto.response.AppointmentResDto;
 import com.nexacare.hospital.enums.AppointmentStatus;
-import com.nexacare.hospital.exception.DoctorAlreadyBookedException;
-import com.nexacare.hospital.exception.InvalidAppointmentStateException;
-import com.nexacare.hospital.exception.ResourceNotFoundException;
-import com.nexacare.hospital.exception.UnauthorizedOperationException;
+import com.nexacare.hospital.exception.*;
 import com.nexacare.hospital.mapper.PrescriptionMapper;
 import com.nexacare.hospital.mapper.dtotoentity.AppointmentMapper;
 import com.nexacare.hospital.mapper.entitytodto.AppointmentEntityToDto;
 import com.nexacare.hospital.model.*;
 import com.nexacare.hospital.repositories.*;
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -81,7 +79,7 @@ private  final PrescriptionItemRepository prescriptionItemRepository;
                 .toList();
 
     }
-
+@Transactional
     public void updateAppointmentStatus(String username, UpdateAppointmentStatusDto updateAppointmentStatusDto) {
 //step1 : check valid doctor
         Doctor doctor = doctorRepository.findByUserUsername(username)
@@ -92,7 +90,7 @@ private  final PrescriptionItemRepository prescriptionItemRepository;
                 .orElseThrow(()->new ResourceNotFoundException("Appointment Id not Found"));
 // step 3. check for the particular appointment belong to the doctor
         if( ! appointment.getDoctor().getId().equals(doctor.getId())){
-            throw  new RuntimeException("You are not authorized to update this appointment");
+            throw  new UnauthorizedOperationException("You are not authorized to update this appointment");
         }
 //        step 4: update the appointment status as per the dto
         appointment.setAppointmentStatus(updateAppointmentStatusDto.appointmentStatus());
@@ -100,7 +98,7 @@ private  final PrescriptionItemRepository prescriptionItemRepository;
         appointmentRepository.save(appointment);
 
     }
-
+@Transactional
     public void rescheduleAppointment(String username, RescheduleAppointmentDto rescheduleAppointmentDto) {
 //step1 : check valid doctor
         Doctor doctor = doctorRepository.findByUserUsername(username)
@@ -124,31 +122,49 @@ private  final PrescriptionItemRepository prescriptionItemRepository;
         appointmentRepository.save(appointment);
     }
 
+    @Transactional
     public void submitPrescription(String username,
                                    SubmitPrescriptionDto submitPrescriptionDto) {
 
-        // Step 1: Validate doctor
+        // Validate doctor
         Doctor doctor = doctorRepository.findByUserUsername(username)
                 .orElseThrow(() ->
-                        new ResourceNotFoundException("Doctor username not found"));
+                        new ResourceNotFoundException("Doctor not found"));
 
-        // Step 2: Validate appointment
+        // Validate appointment
         Appointment appointment = appointmentRepository
                 .findById(submitPrescriptionDto.appointmentId())
                 .orElseThrow(() ->
                         new ResourceNotFoundException("Appointment not found"));
 
-        // Step 3: Check appointment belongs to this doctor
+        // Appointment belongs to logged-in doctor
         if (!appointment.getDoctor().getId().equals(doctor.getId())) {
-            throw new RuntimeException("You are not authorized.");
+            throw new UnauthorizedOperationException(
+                    "You are not authorized to prescribe for this appointment.");
         }
 
-        // Step 4: Save each prescribed medicine
+        // Optional: appointment status validation
+        if (appointment.getAppointmentStatus() != AppointmentStatus.COMPLETED) {
+            throw new IllegalOperationException(
+                    "Prescription can only be submitted after the appointment is completed.");
+        }
+
+        // Optional: prevent duplicate prescriptions
+        if (prescriptionItemRepository.existsByAppointmentId(appointment.getId())) {
+            throw new IllegalOperationException(
+                    "Prescription has already been submitted for this appointment.");
+        }
+
         for (PrescriptionItemDto dto : submitPrescriptionDto.medicines()) {
 
             Medicine medicine = medicineRepository.findById(dto.medicineId())
                     .orElseThrow(() ->
-                            new ResourceNotFoundException("Medicine not found"));
+                            new ResourceNotFoundException(
+                                    "Medicine not found: " + dto.medicineId()));
+
+            if (dto.quantity() <= 0) {
+                throw new IllegalOperationException("Quantity must be greater than zero.");
+            }
 
             PrescriptionItem item = prescriptionMapper.mapDtoToEntity(dto);
 
