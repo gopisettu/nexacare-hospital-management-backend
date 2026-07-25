@@ -2,7 +2,9 @@ package com.nexacare.hospital.service;
 
 import com.nexacare.hospital.dto.request.PatientProfileDto;
 import com.nexacare.hospital.dto.request.PatientRegisterDto;
+import com.nexacare.hospital.dto.request.UserLoginDto;
 import com.nexacare.hospital.dto.response.PatientResDto;
+import com.nexacare.hospital.dto.response.TokenDto;
 import com.nexacare.hospital.enums.Role;
 import com.nexacare.hospital.exception.ResourceNotFoundException;
 import com.nexacare.hospital.mapper.dtotoentity.PatientDtoMapper;
@@ -28,6 +30,10 @@ public class PatientService {
     private  final PatientEntityMapper patientEntityMapper;
     private  final PasswordEncoder passwordEncoder;
 
+private  final JwtService jwtService;
+    public TokenDto loginPatient(PatientRegisterDto patientRegisterDto) {
+        return jwtService.generateToken(patientRegisterDto);
+    }
 
     public void registerPatient(PatientRegisterDto patientDto) {
         Patient patient=new Patient();
@@ -41,6 +47,10 @@ public class PatientService {
         patient.setUser(user);
         //attach the user to the doctor
         patientRepository.save(patient);
+
+
+
+
 
     }
 
@@ -80,8 +90,6 @@ public class PatientService {
        user.setActive(false);
         userRepository.save(user);
     }
-
-
 
 
 

@@ -6,6 +6,7 @@ import com.nexacare.hospital.dto.request.PatientRegisterDto;
 import com.nexacare.hospital.dto.response.AppointmentResDto;
 import com.nexacare.hospital.dto.response.DoctorResDto;
 import com.nexacare.hospital.dto.response.PatientResDto;
+import com.nexacare.hospital.dto.response.TokenDto;
 import com.nexacare.hospital.enums.Department;
 import com.nexacare.hospital.enums.Specialization;
 import com.nexacare.hospital.service.AppointmentService;
@@ -31,8 +32,12 @@ public class PatientController {
  */
     @PostMapping("/register-patient")
     public void registerPatient(@RequestBody PatientRegisterDto patientDto){
-        patientService.registerPatient(patientDto);
+         patientService.registerPatient(patientDto);
     }
+  @PostMapping("/loginPatient")
+  public TokenDto loginPatient(@RequestBody PatientRegisterDto patientRegisterDto){
+        return patientService.loginPatient(patientRegisterDto);
+  }
 
 
 /*
