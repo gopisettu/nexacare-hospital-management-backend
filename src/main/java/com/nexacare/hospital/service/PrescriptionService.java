@@ -28,7 +28,7 @@ public class PrescriptionService {
     private  final AppointmentRepository appointmentRepository;
     private final PrescriptionItemToDtoMapper prescriptionItemToDtoMapper;
     public List<PrescriptionResDto> viewPrescription(String username, Long appointmentId) {
-        User user=userRepository.findByUsername(username)
+       userRepository.findByUsername(username)
                 .orElseThrow(()->{
                     log.warn("User '{}' not found during authentication.", username);
                    return new ResourceNotFoundException("Patient Not Found");
@@ -36,7 +36,7 @@ public class PrescriptionService {
                         }
                 );
 
-        Appointment appointment=appointmentRepository.findById(appointmentId)
+        appointmentRepository.findById(appointmentId)
                 .orElseThrow(()->
                 {log.warn("Appointment Not found for the id",appointmentId);
                     return  new ResourceNotFoundException("Appointment Not Found");

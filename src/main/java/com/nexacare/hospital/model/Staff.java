@@ -25,7 +25,7 @@ public class Staff {
     @JoinColumn(name = "user_id")
     User user;
     @Column(nullable = false)
-    String full_name;
+    String fullname;
     @Enumerated(EnumType.STRING)
     Role role;
     @CreationTimestamp

@@ -106,7 +106,7 @@ doctorRepository.save(doctor);
 
 
     public List<DoctorResDto> searchDoctorBySpecialization(String username, Specialization specialization) {
-         User user =userRepository.findByUsername(username)
+      userRepository.findByUsername(username)
                  .orElseThrow(()->new ResourceNotFoundException("Doctor username not found"));
         List<Doctor> doctorList=doctorRepository.searchDoctorBySpecialization(specialization);
         if (doctorList.isEmpty()) {
@@ -125,7 +125,7 @@ doctorRepository.save(doctor);
 
     public List<DoctorResDto> searchDoctorByDepartment(String username, Department department)
     {
-        User user =userRepository.findByUsername(username)
+    userRepository.findByUsername(username)
                 .orElseThrow(()->new ResourceNotFoundException("Doctor username not found"));
 
         List<Doctor> doctorList=doctorRepository.searchDoctorByDepartment(department);
