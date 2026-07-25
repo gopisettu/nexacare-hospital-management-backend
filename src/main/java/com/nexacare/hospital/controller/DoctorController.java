@@ -43,12 +43,6 @@ public class DoctorController {
         return doctorService.getDoctorByUsername(username);
     }
 
-    @PutMapping("/deActivate-ByDoctor/{username}")
-    public void deActiveDoctor(@PathVariable String username)
-    {
-        doctorService.deActivateDoctor(username);
-    }
-
     @GetMapping("/allAppointment-ByDoctor/{username}")
     public List<AppointmentResDto> showAllAppointmentByDoctor(@PathVariable String username,
                                                               @RequestParam(required = false,defaultValue = "0") Integer page,

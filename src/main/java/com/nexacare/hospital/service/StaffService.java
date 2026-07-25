@@ -25,11 +25,11 @@ public class StaffService {
     public void registerStaff(@Valid LoginDto loginDto) {
         Staff staff=new Staff();
         User user=new User();
-        user.setUsername(loginDto.password());
+        user.setUsername(loginDto.username());
         user.setPassword(passwordEncoder.encode(loginDto.password()));
         userRepository.save(user);
         staff.setUser(user);
-        staff.setFull_name(loginDto.username());
+        staff.setFullname(loginDto.username());
         staff.setRole(Role.STAFF);
         staffRepository.save(staff);
         log.info("Staff Successfully Registedred  ");

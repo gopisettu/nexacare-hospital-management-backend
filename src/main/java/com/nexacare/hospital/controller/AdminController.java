@@ -20,13 +20,8 @@ public class AdminController {
     private  final StaffService staffService;
     private final AdminService adminService;
 
-    @PostMapping("/register-SelfAdmin")
-    public  void registerAdmin(@Valid @RequestBody LoginDto loginDto)
-    {
-        adminService.registerAdmin(loginDto);
-    }
     @PostMapping("/loginAdmin")
-    public TokenDto loginPatient(@RequestBody
+    public TokenDto loginAdmin(@RequestBody
                                  LoginDto loginDto){
         return adminService.loginAdmin(loginDto);
     }

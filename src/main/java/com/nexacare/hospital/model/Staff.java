@@ -16,12 +16,12 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-@Table(name = "patient")
+@Table(name = "staff")
 public class Staff {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
-    @ManyToOne
+    @OneToOne
     @JoinColumn(name = "user_id")
     User user;
     @Column(nullable = false)

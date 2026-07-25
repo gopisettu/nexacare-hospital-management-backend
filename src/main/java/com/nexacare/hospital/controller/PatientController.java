@@ -54,10 +54,6 @@ public class PatientController {
         return patientService.getPatientByUsername(username);
     }
 
-    @PutMapping("/deActivate-ByPatient/{username}")
-    public void deActivatePatient(@PathVariable String username){
-        patientService.deActivatePatient(username);
-    }
 
 
     @PostMapping("/book-doctorByPatient/{username}")
