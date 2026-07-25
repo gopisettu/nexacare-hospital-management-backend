@@ -2,7 +2,6 @@ package com.nexacare.hospital.service;
 
 import com.nexacare.hospital.dto.request.LoginDto;
 import com.nexacare.hospital.dto.request.PatientProfileDto;
-import com.nexacare.hospital.dto.request.PatientRegisterDto;
 import com.nexacare.hospital.dto.response.PatientResDto;
 import com.nexacare.hospital.dto.response.TokenDto;
 import com.nexacare.hospital.enums.Role;
@@ -35,12 +34,12 @@ private  final JwtService jwtService;
         return jwtService.generateToken(loginDto.username());
     }
 
-    public void registerPatient(PatientRegisterDto patientDto) {
+    public void registerPatient(LoginDto loginDto) {
         Patient patient=new Patient();
         User user=new User();
         //setting username,password and role
-        user.setUsername(patientDto.username());
-        user.setPassword(passwordEncoder.encode(patientDto.password()));
+        user.setUsername(loginDto.username());
+        user.setPassword(passwordEncoder.encode(loginDto.password()));
         user.setRole(Role.PATIENT);
         user =userRepository.save(user);
         //save the user

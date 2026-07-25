@@ -3,6 +3,7 @@ package com.nexacare.hospital.repositories;
 import com.nexacare.hospital.enums.Department;
 import com.nexacare.hospital.enums.Specialization;
 import com.nexacare.hospital.model.Doctor;
+import com.nexacare.hospital.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import org.springframework.data.jpa.repository.Query;
@@ -31,4 +32,6 @@ List<Doctor>searchDoctorBySpecialization(Specialization specialization);
     )
 
     List<Doctor> searchDoctorByDepartment(Department department);
+
+
 }

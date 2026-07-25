@@ -50,6 +50,11 @@ public class SpringSecurityConfig {
                         .requestMatchers(HttpMethod.PATCH, "/api/doctor/updateAppointmentStatus-ByDoctor/**").hasAuthority(Role.DOCTOR.toString())
                         .requestMatchers(HttpMethod.POST, "/api/doctor/submitPrescription-byDoctor/**").hasAuthority(Role.DOCTOR.toString())
 
+                        .requestMatchers(HttpMethod.POST,"/api/admin/register-staffByAdmin").hasAuthority(Role.ADMIN.toString())
+                        .requestMatchers(HttpMethod.POST,"/api/admin/register-doctorByAdmin").hasAuthority(Role.ADMIN.toString())
+                        .requestMatchers(HttpMethod.POST,"/api/admin/register-SelfAdmin").permitAll()
+                        .requestMatchers(HttpMethod.POST,"/api/admin/loginAdmin").permitAll()
+
                 );
         http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
          http.httpBasic(Customizer.withDefaults());

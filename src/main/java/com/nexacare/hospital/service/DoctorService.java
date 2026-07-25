@@ -1,9 +1,7 @@
 package com.nexacare.hospital.service;
 
 import com.nexacare.hospital.dto.request.DoctorProfileDto;
-import com.nexacare.hospital.dto.request.DoctorRegisterDto;
 import com.nexacare.hospital.dto.request.LoginDto;
-import com.nexacare.hospital.dto.response.AppointmentResDto;
 import com.nexacare.hospital.dto.response.DoctorResDto;
 import com.nexacare.hospital.dto.response.TokenDto;
 import com.nexacare.hospital.enums.Department;
@@ -13,9 +11,7 @@ import com.nexacare.hospital.exception.ResourceNotFoundException;
 import com.nexacare.hospital.mapper.dtotoentity.DoctorMapper;
 import com.nexacare.hospital.mapper.entitytodto.AppointmentEntityToDto;
 import com.nexacare.hospital.mapper.entitytodto.DoctorDtoMapper;
-import com.nexacare.hospital.model.Appointment;
 import com.nexacare.hospital.model.Doctor;
-import com.nexacare.hospital.model.Patient;
 import com.nexacare.hospital.model.User;
 import com.nexacare.hospital.repositories.DoctorRepository;
 import com.nexacare.hospital.repositories.UserRepository;
@@ -27,7 +23,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @AllArgsConstructor
@@ -42,13 +37,13 @@ public class DoctorService {
     public TokenDto loginDoctor(LoginDto loginDto) {
         return jwtService.generateToken(loginDto.username());
     }
-    public void registerDoctor(@Valid DoctorRegisterDto doctorRegisterDto) {
+    public void registerDoctor(@Valid LoginDto loginDto) {
 
         Doctor doctor = new Doctor();
         User user = new User();
 
-        user.setUsername(doctorRegisterDto.username());
-        user.setPassword(passwordEncoder.encode(doctorRegisterDto.password()));
+        user.setUsername(loginDto.username());
+        user.setPassword(passwordEncoder.encode(loginDto.password()));
         user.setRole(Role.DOCTOR);
 
         user = userRepository.save(user);

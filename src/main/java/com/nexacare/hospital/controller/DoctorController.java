@@ -27,10 +27,7 @@ public class DoctorController {
     public TokenDto loginDoctor(@RequestBody LoginDto loginDto ){
         return doctorService.loginDoctor(loginDto);
     }
-    @PostMapping("/register-doctor")
-    public void registerDoctor( @Valid @RequestBody DoctorRegisterDto doctorRegisterDto){
-        doctorService.registerDoctor(doctorRegisterDto);
-    }
+
     @PutMapping("/update-doctorProfile/{username}")
     public void updateProfile(@Valid @RequestBody DoctorProfileDto doctorProfileDto,@PathVariable String username){
         doctorService.updateProfile(doctorProfileDto,username);

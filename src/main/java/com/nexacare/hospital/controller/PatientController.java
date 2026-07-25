@@ -3,7 +3,6 @@ package com.nexacare.hospital.controller;
 import com.nexacare.hospital.dto.request.BookAppointmentDto;
 import com.nexacare.hospital.dto.request.LoginDto;
 import com.nexacare.hospital.dto.request.PatientProfileDto;
-import com.nexacare.hospital.dto.request.PatientRegisterDto;
 import com.nexacare.hospital.dto.response.AppointmentResDto;
 import com.nexacare.hospital.dto.response.DoctorResDto;
 import com.nexacare.hospital.dto.response.PatientResDto;
@@ -32,8 +31,8 @@ public class PatientController {
 }
  */
     @PostMapping("/register-patient")
-    public void registerPatient(@RequestBody PatientRegisterDto patientDto){
-         patientService.registerPatient(patientDto);
+    public void registerPatient(@RequestBody LoginDto loginDto){
+         patientService.registerPatient(loginDto);
     }
   @PostMapping("/loginPatient")
   public TokenDto loginPatient(@RequestBody

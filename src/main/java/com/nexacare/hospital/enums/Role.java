@@ -4,5 +4,6 @@ public enum Role {
     DOCTOR,
     PATIENT,
     EXECUTIVE,
-    STAFF
+    STAFF,
+    ADMIN
 }
