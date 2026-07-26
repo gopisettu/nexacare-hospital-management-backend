@@ -36,7 +36,8 @@ public class GlobalExceptionHandler {
         logger.warn("Resource not found: {}", e.getMessage());
 
         return  ResponseEntity
-                .badRequest()
+
+                .status(HttpStatus.NOT_FOUND)
                 .body(e.getMessage());
     }
 
@@ -75,7 +76,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorMessageDto>handleDoctorAlreadyBookedException(DoctorAlreadyBookedException e){
         logger.warn("Doctor already booked: {}", e.getMessage());
         return  ResponseEntity
-                .badRequest()
+                .status(HttpStatus.CONFLICT)
                 .body(new ErrorMessageDto(e.getMessage()));
     }
 
@@ -84,7 +85,8 @@ public class GlobalExceptionHandler {
 
         logger.warn("Illegal operation: {}", e.getMessage());
         return  ResponseEntity
-                .badRequest()
+                .status(HttpStatus.BAD_REQUEST)
+
                 .body(new ErrorMessageDto(e.getMessage()));
     }
 
