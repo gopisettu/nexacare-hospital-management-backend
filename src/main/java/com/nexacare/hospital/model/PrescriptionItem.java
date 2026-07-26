@@ -39,4 +39,7 @@ public class PrescriptionItem {
     private Route route;
 
     private String instructions;
+
+    @Column(nullable = false)
+    private Integer quantity;
 }

@@ -3,6 +3,7 @@ package com.nexacare.hospital.controller;
 import com.nexacare.hospital.dto.request.BookAppointmentDto;
 import com.nexacare.hospital.dto.request.LoginDto;
 import com.nexacare.hospital.dto.request.PatientProfileDto;
+import com.nexacare.hospital.dto.request.PayBillDto;
 import com.nexacare.hospital.dto.response.AppointmentResDto;
 import com.nexacare.hospital.dto.response.DoctorResDto;
 import com.nexacare.hospital.dto.response.PatientResDto;
@@ -13,6 +14,7 @@ import com.nexacare.hospital.service.AppointmentService;
 import com.nexacare.hospital.service.DoctorService;
 import com.nexacare.hospital.service.PatientService;
 import com.nexacare.hospital.service.PrescriptionService;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -81,6 +83,11 @@ public class PatientController {
     public List<PrescriptionResDto> viewPrescription(@PathVariable String username,@RequestParam Long appointmentId){
         return prescriptionService.viewPrescription(username,appointmentId);
     }
-
+    @PatchMapping("/payBill-ByPatient/{appointmentId}")
+    public void payBill(@PathVariable Long appointmentId,
+                        @RequestParam String username,
+                        @Valid @RequestBody PayBillDto dto) {
+        appointmentService.payBill(username, appointmentId, dto);
+    }
 
 }

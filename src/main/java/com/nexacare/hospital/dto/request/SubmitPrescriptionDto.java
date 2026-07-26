@@ -8,7 +8,6 @@ public record SubmitPrescriptionDto(
 
         @NotNull
         Long appointmentId,
-
         List<PrescriptionItemDto> medicines
 
 ) {

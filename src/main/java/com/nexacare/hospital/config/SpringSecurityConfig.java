@@ -66,6 +66,7 @@ public class SpringSecurityConfig {
 
                         .requestMatchers(HttpMethod.POST,"/api/staff/loginStaff").permitAll()
                         .requestMatchers(HttpMethod.POST,"/api/staff/addMedicineStock-ByStaff/**").hasAuthority(Role.STAFF.toString())
+                        .requestMatchers(HttpMethod.PATCH, "/api/patient/payBill-ByPatient/**").hasAuthority(Role.PATIENT.toString())
                 );
         http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
          http.httpBasic(Customizer.withDefaults());

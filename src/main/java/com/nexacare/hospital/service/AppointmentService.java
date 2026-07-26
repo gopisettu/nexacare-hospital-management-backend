@@ -4,6 +4,7 @@ import com.nexacare.hospital.dto.request.*;
 import com.nexacare.hospital.dto.response.AppointmentResDto;
 import com.nexacare.hospital.enums.AppointmentStatus;
 import com.nexacare.hospital.enums.BatchStatus;
+import com.nexacare.hospital.enums.PaymentStatus;
 import com.nexacare.hospital.exception.*;
 import com.nexacare.hospital.mapper.PrescriptionMapper;
 import com.nexacare.hospital.mapper.dtotoentity.AppointmentMapper;
@@ -33,6 +34,8 @@ private final PrescriptionMapper prescriptionMapper;
 private final MedicineRepository medicineRepository;
 private  final PrescriptionItemRepository prescriptionItemRepository;
 private final MedicineBatchRepository medicineBatchRepository;
+private  final BillingService billingService;
+private final InventoryService inventoryService;
     private static final String DOCTOR_NOT_FOUND = "Doctor not found";
     public void bookDoctor(String username, BookAppointmentDto dto) {
         log.info("Patient '{}' is attempting to book an appointment with doctor ID {} on {} at {}",
@@ -162,29 +165,22 @@ private final MedicineBatchRepository medicineBatchRepository;
 
     @Transactional
     public void submitPrescription(String username,
-                                   SubmitPrescriptionDto submitPrescriptionDto) {
+                                   SubmitPrescriptionDto dto) {
 
-        // Validate doctor
         Doctor doctor = doctorRepository.findByUserUsername(username)
                 .orElseThrow(() ->
                         new ResourceNotFoundException(DOCTOR_NOT_FOUND));
 
-        // Validate appointment
         Appointment appointment = appointmentRepository
-                .findById(submitPrescriptionDto.appointmentId())
-                .orElseThrow(() ->
-                        new ResourceNotFoundException("Appointment not found"));
-
-        // Appointment belongs to logged-in doctor
+                .findById(dto.appointmentId())
+                .orElseThrow(() -> new ResourceNotFoundException("Appointment not found"));
         if (!appointment.getDoctor().getId().equals(doctor.getId())) {
             log.warn("Unauthorized prescription attempt by doctor '{}' for appointment {}",
-                    username,
-                    appointment.getId());
+                    username, appointment.getId());
             throw new UnauthorizedOperationException(
                     "You are not authorized to prescribe for this appointment.");
         }
 
-        // Optional: appointment status validation
         if (appointment.getAppointmentStatus() != AppointmentStatus.COMPLETED) {
             log.warn("Prescription rejected because appointment {} is not completed.",
                     appointment.getId());
@@ -192,79 +188,72 @@ private final MedicineBatchRepository medicineBatchRepository;
                     "Prescription can only be submitted after the appointment is completed.");
         }
 
-        // Optional: prevent duplicate prescriptions
         if (prescriptionItemRepository.existsByAppointmentId(appointment.getId())) {
             throw new IllegalOperationException(
                     "Prescription has already been submitted for this appointment.");
         }
 
-        for (PrescriptionItemDto dto : submitPrescriptionDto.medicines()) {
+        double medicineFee = 0;
 
-            Medicine medicine = medicineRepository.findById(dto.medicineId())
+        for (PrescriptionItemDto item : dto.medicines()) {
+            Medicine medicine = medicineRepository.findById(item.medicineId())
                     .orElseThrow(() ->
                             new ResourceNotFoundException(
-                                    "Medicine not found: " + dto.medicineId()));
+                                    "Medicine not found: " + item.medicineId()));
 
-            if (dto.quantity() <= 0) {
-                throw new IllegalOperationException("Quantity must be greater than zero.");
-            }
+        billingService.calculateMedicineCost(medicine, item.quantity());
 
-            // Fetch available batches ordered by expiry date
-            List<MedicineBatch> batches =
-                    medicineBatchRepository
-                            .findByMedicineIdAndBatchStatusAndQuantityRemainingGreaterThanOrderByExpiryDateAsc(
-                                    medicine.getId(),
-                                    BatchStatus.ACTIVE,
-                                    0);
+            savePrescriptionItem(appointment, medicine, item);
 
-            if (batches.isEmpty()) {
-                throw new IllegalOperationException(
-                        "Medicine is out of stock : " + medicine.getName());
-            }
-
-            int requiredQuantity = dto.quantity();
-
-            for (MedicineBatch batch : batches) {
-
-                if (requiredQuantity == 0) {
-                    break;
-                }
-
-                int available = batch.getQuantityRemaining();
-
-                if (available >= requiredQuantity) {
-
-                    batch.setQuantityRemaining(available - requiredQuantity);
-
-                    if (batch.getQuantityRemaining() == 0) {
-                        batch.setBatchStatus(BatchStatus.OUT_OF_STOCK);
-                    }
-
-                    medicineBatchRepository.save(batch);
-
-                    requiredQuantity = 0;
-
-                } else {
-
-                    requiredQuantity -= available;
-
-                    batch.setQuantityRemaining(0);
-                    batch.setBatchStatus(BatchStatus.OUT_OF_STOCK);
-
-                    medicineBatchRepository.save(batch);
-                }
-            }
-
-            if (requiredQuantity > 0) {
-                throw new IllegalOperationException(
-                        "Insufficient stock for medicine : " + medicine.getName());
-            }
-
-            PrescriptionItem item = prescriptionMapper.mapDtoToEntity(dto);
-            item.setAppointment(appointment);
-            item.setMedicine(medicine);
-
-            prescriptionItemRepository.save(item);
+            medicineFee += billingService.calculateMedicineCost(medicine, item.quantity());
         }
+
+        billingService.generateBill(appointment, doctor, medicineFee);
+    }
+
+    public void payBill(String username, Long appointmentId, PayBillDto dto) {
+
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new ResourceNotFoundException("Patient username not found"));
+
+        Patient patient = patientRepository.findByUser(user)
+                .orElseThrow(() -> new ResourceNotFoundException("Patient not found"));
+
+        Appointment appointment = appointmentRepository.findById(appointmentId)
+                .orElseThrow(() -> new ResourceNotFoundException("Appointment not found"));
+
+        // Ownership check - same pattern as the fix needed in viewPrescription
+        if (!appointment.getPatient().getId().equals(patient.getId())) {
+            log.warn("Unauthorized payment attempt by patient '{}' for appointment {}",
+                    username, appointmentId);
+            throw new UnauthorizedOperationException(
+                    "You are not authorized to pay this bill.");
+        }
+
+        if (appointment.getPaymentStatus() != PaymentStatus.PENDING) {
+            log.warn("Payment rejected for appointment {}: current status is {}",
+                    appointmentId, appointment.getPaymentStatus());
+            throw new IllegalOperationException(
+                    "This bill is not pending payment (current status: "
+                            + appointment.getPaymentStatus() + ").");
+        }
+
+        appointment.setPaymentMethod(dto.paymentMethod());
+        appointment.setPaymentStatus(PaymentStatus.PAID);
+        appointmentRepository.save(appointment);
+
+        log.info("Appointment {} marked PAID via {} by patient '{}'",
+                appointmentId, dto.paymentMethod(), username);
+    }
+    private void savePrescriptionItem(Appointment appointment,
+                                      Medicine medicine,
+                                      PrescriptionItemDto dto) {
+
+        PrescriptionItem item = prescriptionMapper.mapDtoToEntity(dto);
+
+        item.setAppointment(appointment);
+        item.setMedicine(medicine);
+
+        prescriptionItemRepository.save(item);
     }
 }
