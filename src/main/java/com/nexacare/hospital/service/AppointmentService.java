@@ -3,6 +3,7 @@ package com.nexacare.hospital.service;
 import com.nexacare.hospital.dto.request.*;
 import com.nexacare.hospital.dto.response.AppointmentResDto;
 import com.nexacare.hospital.enums.AppointmentStatus;
+import com.nexacare.hospital.enums.BatchStatus;
 import com.nexacare.hospital.exception.*;
 import com.nexacare.hospital.mapper.PrescriptionMapper;
 import com.nexacare.hospital.mapper.dtotoentity.AppointmentMapper;
@@ -31,6 +32,7 @@ private  final AppointmentEntityToDto appointmentEntityToDto;
 private final PrescriptionMapper prescriptionMapper;
 private final MedicineRepository medicineRepository;
 private  final PrescriptionItemRepository prescriptionItemRepository;
+private final MedicineBatchRepository medicineBatchRepository;
     private static final String DOCTOR_NOT_FOUND = "Doctor not found";
     public void bookDoctor(String username, BookAppointmentDto dto) {
         log.info("Patient '{}' is attempting to book an appointment with doctor ID {} on {} at {}",
@@ -207,14 +209,62 @@ private  final PrescriptionItemRepository prescriptionItemRepository;
                 throw new IllegalOperationException("Quantity must be greater than zero.");
             }
 
-            PrescriptionItem item = prescriptionMapper.mapDtoToEntity(dto);
+            // Fetch available batches ordered by expiry date
+            List<MedicineBatch> batches =
+                    medicineBatchRepository
+                            .findByMedicineIdAndBatchStatusAndQuantityRemainingGreaterThanOrderByExpiryDateAsc(
+                                    medicine.getId(),
+                                    BatchStatus.ACTIVE,
+                                    0);
 
+            if (batches.isEmpty()) {
+                throw new IllegalOperationException(
+                        "Medicine is out of stock : " + medicine.getName());
+            }
+
+            int requiredQuantity = dto.quantity();
+
+            for (MedicineBatch batch : batches) {
+
+                if (requiredQuantity == 0) {
+                    break;
+                }
+
+                int available = batch.getQuantityRemaining();
+
+                if (available >= requiredQuantity) {
+
+                    batch.setQuantityRemaining(available - requiredQuantity);
+
+                    if (batch.getQuantityRemaining() == 0) {
+                        batch.setBatchStatus(BatchStatus.OUT_OF_STOCK);
+                    }
+
+                    medicineBatchRepository.save(batch);
+
+                    requiredQuantity = 0;
+
+                } else {
+
+                    requiredQuantity -= available;
+
+                    batch.setQuantityRemaining(0);
+                    batch.setBatchStatus(BatchStatus.OUT_OF_STOCK);
+
+                    medicineBatchRepository.save(batch);
+                }
+            }
+
+            if (requiredQuantity > 0) {
+                throw new IllegalOperationException(
+                        "Insufficient stock for medicine : " + medicine.getName());
+            }
+
+            PrescriptionItem item = prescriptionMapper.mapDtoToEntity(dto);
             item.setAppointment(appointment);
             item.setMedicine(medicine);
 
             prescriptionItemRepository.save(item);
-            log.info("Prescription submitted successfully for appointment {}",
-                    appointment.getId());
         }
     }
 }
