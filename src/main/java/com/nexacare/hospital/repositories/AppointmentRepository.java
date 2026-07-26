@@ -1,6 +1,7 @@
 package com.nexacare.hospital.repositories;
 
 import com.nexacare.hospital.model.Appointment;
+import com.nexacare.hospital.model.MedicineBatch;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -42,4 +43,7 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Long> 
             @Param("appointmentDate") LocalDate appointmentDate,
             @Param("appointmentTime") LocalTime appointmentTime);
 
+    interface MedicineBatchRepository extends JpaRepository<MedicineBatch,Long> {
+
+    }
 }

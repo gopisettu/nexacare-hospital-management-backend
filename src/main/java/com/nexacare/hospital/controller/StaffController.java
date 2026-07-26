@@ -1,13 +1,12 @@
 package com.nexacare.hospital.controller;
 
+
+import com.nexacare.hospital.dto.request.AddMedicineDto;
 import com.nexacare.hospital.dto.request.LoginDto;
 import com.nexacare.hospital.dto.response.TokenDto;
 import com.nexacare.hospital.service.StaffService;
 import lombok.AllArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/staff")
@@ -19,4 +18,9 @@ public class StaffController {
                                  LoginDto loginDto){
         return staffService.loginStaff(loginDto);
     }
+    @PostMapping("/addMedicineStock-ByStaff/{username}")
+    public void  addMedicine(@PathVariable String username,@RequestBody AddMedicineDto addMedicineBatchDto ){
+        staffService.addMedicine(username,addMedicineBatchDto);
+    }
+
 }

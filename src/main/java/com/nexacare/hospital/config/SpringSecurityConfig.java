@@ -3,6 +3,7 @@ package com.nexacare.hospital.config;
 import com.nexacare.hospital.enums.Role;
 import com.nexacare.hospital.service.MyUserDetailService;
 import lombok.AllArgsConstructor;
+import org.aspectj.weaver.patterns.HasMemberTypePatternForPerThisMatching;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -61,6 +62,10 @@ public class SpringSecurityConfig {
                         .requestMatchers(HttpMethod.POST,"/api/executive/register-AdminByExecutive").permitAll()
                         .requestMatchers(HttpMethod.PUT, "/api/executive/deActivatePatient-ByExecutive/**").hasAuthority(Role.EXECUTIVE.toString())
                         .requestMatchers(HttpMethod.PUT, "/api/executive/deActivateDoctor-ByExecutive/**").hasAuthority(Role.EXECUTIVE.toString())
+
+
+                        .requestMatchers(HttpMethod.POST,"/api/staff/loginStaff").permitAll()
+                        .requestMatchers(HttpMethod.POST,"/api/staff/addMedicineStock-ByStaff/**").hasAuthority(Role.STAFF.toString())
                 );
         http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
          http.httpBasic(Customizer.withDefaults());
