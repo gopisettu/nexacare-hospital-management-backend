@@ -54,7 +54,7 @@ public class StaffService {
 
 
     public void addMedicine(String username, AddMedicineDto medicineDto) {
-        User user= userRepository.findByUserUsername(username)
+        userRepository.findByUserUsername(username)
                 .orElseThrow(() ->
                         new ResourceNotFoundException("Staff not found"));
 

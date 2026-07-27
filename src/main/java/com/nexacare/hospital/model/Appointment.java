@@ -70,6 +70,6 @@ public class Appointment {
     @CreationTimestamp
     private Instant createdAt;
 
-    private double TotalBill;
+    private double totalBill;
 
 }
