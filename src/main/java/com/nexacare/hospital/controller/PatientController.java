@@ -4,10 +4,7 @@ import com.nexacare.hospital.dto.request.BookAppointmentDto;
 import com.nexacare.hospital.dto.request.LoginDto;
 import com.nexacare.hospital.dto.request.PatientProfileDto;
 import com.nexacare.hospital.dto.request.PayBillDto;
-import com.nexacare.hospital.dto.response.AppointmentResDto;
-import com.nexacare.hospital.dto.response.DoctorResDto;
-import com.nexacare.hospital.dto.response.PatientResDto;
-import com.nexacare.hospital.dto.response.TokenDto;
+import com.nexacare.hospital.dto.response.*;
 import com.nexacare.hospital.enums.Department;
 import com.nexacare.hospital.enums.Specialization;
 import com.nexacare.hospital.service.AppointmentService;
@@ -80,7 +77,7 @@ public class PatientController {
         return doctorService.searchDoctorByDepartment(username,department);
     }
     @GetMapping("/view-PrescriptionByPatient/{username}")
-    public List<PrescriptionResDto> viewPrescription(@PathVariable String username,@RequestParam Long appointmentId){
+    public List<PrescriptionResDto> viewPrescription(@PathVariable String username, @RequestParam Long appointmentId){
         return prescriptionService.viewPrescription(username,appointmentId);
     }
     @PatchMapping("/payBill-ByPatient/{appointmentId}")
@@ -89,5 +86,7 @@ public class PatientController {
                         @Valid @RequestBody PayBillDto dto) {
         appointmentService.payBill(username, appointmentId, dto);
     }
+
+
 
 }

@@ -201,8 +201,6 @@ private final InventoryService inventoryService;
                             new ResourceNotFoundException(
                                     "Medicine not found: " + item.medicineId()));
 
-        billingService.calculateMedicineCost(medicine, item.quantity());
-
             savePrescriptionItem(appointment, medicine, item);
 
             medicineFee += billingService.calculateMedicineCost(medicine, item.quantity());

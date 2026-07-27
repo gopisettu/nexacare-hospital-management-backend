@@ -1,13 +1,9 @@
 package com.nexacare.hospital.service;
 
-import com.nexacare.hospital.controller.PrescriptionResDto;
-import com.nexacare.hospital.dto.request.PrescriptionItemDto;
+import com.nexacare.hospital.dto.response.PrescriptionResDto;
 import com.nexacare.hospital.exception.ResourceNotFoundException;
-import com.nexacare.hospital.mapper.PrescriptionMapper;
 import com.nexacare.hospital.mapper.entitytodto.PrescriptionItemToDtoMapper;
-import com.nexacare.hospital.model.Appointment;
 import com.nexacare.hospital.model.PrescriptionItem;
-import com.nexacare.hospital.model.User;
 import com.nexacare.hospital.repositories.AppointmentRepository;
 import com.nexacare.hospital.repositories.PatientRepository;
 import com.nexacare.hospital.repositories.PrescriptionItemRepository;

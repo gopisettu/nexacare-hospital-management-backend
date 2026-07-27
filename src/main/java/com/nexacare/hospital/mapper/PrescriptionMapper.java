@@ -17,6 +17,7 @@ public class PrescriptionMapper {
         item.setDurationDays(dto.durationDays());
         item.setRoute(dto.route());
         item.setInstructions(dto.instruction());
+item.setQuantity(dto.quantity());
 
         return item;
     }

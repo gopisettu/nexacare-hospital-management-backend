@@ -1,4 +1,4 @@
-package com.nexacare.hospital.controller;
+package com.nexacare.hospital.dto.response;
 
 import com.nexacare.hospital.enums.Frequency;
 import com.nexacare.hospital.enums.Route;
