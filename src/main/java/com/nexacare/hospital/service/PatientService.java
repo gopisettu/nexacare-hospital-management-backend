@@ -1,5 +1,6 @@
 package com.nexacare.hospital.service;
 
+import com.nexacare.hospital.controller.PatientRegisterByAdminDto;
 import com.nexacare.hospital.dto.request.LoginDto;
 import com.nexacare.hospital.dto.request.PatientProfileDto;
 import com.nexacare.hospital.dto.response.PatientResDto;
@@ -16,6 +17,7 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -72,7 +74,8 @@ private  final JwtService jwtService;
     }
 
     public List<PatientResDto> getAllPatient(int page,int size) {
-        Pageable pageable=PageRequest.of(page,size);
+       Sort sort= Sort.by(Sort.Direction.DESC,"createdAt");
+        Pageable pageable=PageRequest.of(page,size,sort);
         List<Patient> patientList=patientRepository.findAllExceptDeactivePatient(pageable).getContent();
         log.info("Retrieved {} patient(s).", patientList.size());
          return  patientList.stream()
@@ -106,5 +109,28 @@ private  final JwtService jwtService;
     }
 
 
+    public void registerFullPatientByAdmin(PatientRegisterByAdminDto patientRegisterByAdminDto) {
+        User user=new User();
+        user.setRole(Role.PATIENT);
+        user.setUsername(patientRegisterByAdminDto.getUsername());
+        user.setPassword(patientRegisterByAdminDto.getPassword());
+        userRepository.save(user);
+         Patient patient=new Patient();
+         patient.setUser(user);
+         patient.setFirstName(patientRegisterByAdminDto.getFirstName());
+         patient.setLastName(patientRegisterByAdminDto.getLastName());
+         patient.setGender(patientRegisterByAdminDto.getGender());
+         patient.setDob(patientRegisterByAdminDto.getDob());
+         patient.setAadharNumber(patientRegisterByAdminDto.getAadharNumber());
+         patient.setBloodGroup(patientRegisterByAdminDto.getBloodGroup());
+         patient.setPhone(patientRegisterByAdminDto.getPhone());
+patient.setEmail(patientRegisterByAdminDto.getEmail());
+patient.setAddress(patientRegisterByAdminDto.getAddress());
+    patient.setAllergies(patientRegisterByAdminDto.getAllergies());
+    patient.setChronicDisease(patientRegisterByAdminDto.getChronicDisease());
+
+    patientRepository.save(patient);
+
+    }
 
 }

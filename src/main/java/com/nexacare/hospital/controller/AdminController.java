@@ -4,21 +4,21 @@ import com.nexacare.hospital.dto.request.LoginDto;
 import com.nexacare.hospital.dto.response.TokenDto;
 import com.nexacare.hospital.service.AdminService;
 import com.nexacare.hospital.service.DoctorService;
+import com.nexacare.hospital.service.PatientService;
 import com.nexacare.hospital.service.StaffService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/admin")
 @AllArgsConstructor
+@CrossOrigin(origins = "http://localhost:5173")
 public class AdminController {
     private  final DoctorService doctorService;
     private  final StaffService staffService;
     private final AdminService adminService;
+    private final PatientService patientService;
 
     @PostMapping("/loginAdmin")
     public TokenDto loginAdmin(@RequestBody
@@ -34,6 +34,9 @@ public class AdminController {
     {
      staffService.registerStaff(loginDto);
     }
-
+@PostMapping("/addPatient-ByAdmin")
+    public  void  registerFullPatient(@RequestBody PatientRegisterByAdminDto patientRegisterByAdminDto){
+patientService.registerFullPatientByAdmin(patientRegisterByAdminDto);
+}
 
 }

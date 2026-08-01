@@ -22,13 +22,51 @@ public class GlobalExceptionHandler {
             LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
     @ExceptionHandler(SQLIntegrityConstraintViolationException.class)
-    public ResponseEntity<ErrorMessageDto>handleSQLIntegrityConstraintViolationException(SQLIntegrityConstraintViolationException e){
+    public ResponseEntity<ErrorMessageDto> handleSQLIntegrityConstraintViolationException(
+            SQLIntegrityConstraintViolationException e) {
 
         logger.error("SQL Integrity Constraint Violation: {}", e.getMessage(), e);
-        return  ResponseEntity
-        .badRequest()
 
-        .body(new ErrorMessageDto("UserName Already Exists !"));
+        String error = e.getMessage().toLowerCase();
+        String message;
+
+        if (error.contains("username")) {
+            message = "Username already exists.";
+        } else if (error.contains("password")) {
+            message = "Password cannot be empty.";
+        } else if (error.contains("role")) {
+            message = "Role cannot be empty.";
+        } else if (error.contains("firstname")) {
+            message = "First name cannot be empty.";
+        } else if (error.contains("lastname")) {
+            message = "Last name cannot be empty.";
+        } else if (error.contains("gender")) {
+            message = "Please select gender.";
+        } else if (error.contains("dob")) {
+            message = "Date of birth cannot be empty.";
+        } else if (error.contains("aadharnumber")) {
+            message = "Aadhar number already exists.";
+        } else if (error.contains("bloodgroup")) {
+            message = "Please select blood group.";
+        } else if (error.contains("phone")) {
+            message = "Phone number already exists.";
+        } else if (error.contains("email")) {
+            message = "Email already exists.";
+        } else if (error.contains("address")) {
+            message = "Address cannot be empty.";
+        } else if (error.contains("allergies")) {
+            message = "Allergies cannot be empty.";
+        } else if (error.contains("chronicdisease")) {
+            message = "Chronic disease cannot be empty.";
+        } else if (error.contains("createdat")) {
+            message = "Created date cannot be empty.";
+        } else {
+            message = e.getMessage();
+        }
+
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(new ErrorMessageDto(message));
     }
     @ExceptionHandler(ResourceNotFoundException.class)
     public ResponseEntity<String> handleResourceNotFoundException(ResourceNotFoundException e){

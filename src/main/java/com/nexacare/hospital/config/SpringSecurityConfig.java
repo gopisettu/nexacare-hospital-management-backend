@@ -60,7 +60,7 @@ public class SpringSecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/api/doctor/loginDoctor").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/doctor/get-allDoctor").permitAll()
                         .requestMatchers(HttpMethod.GET,"/api/doctor/get-DoctorByUsername/**").permitAll()
-                        .requestMatchers(HttpMethod.PUT, "/api/doctor/update-doctorProfile/**").hasAuthority(Role.DOCTOR.toString())
+                        .requestMatchers(HttpMethod.PUT,"/api/doctor/update-doctorProfile/**").permitAll()
 
                         .requestMatchers(HttpMethod.GET, "/api/doctor/allAppointment-ByDoctor/**").hasAuthority(Role.DOCTOR.toString())
                         .requestMatchers(HttpMethod.PATCH, "/api/doctor/rescheduleAppointment-ByDoctor/**").hasAuthority(Role.DOCTOR.toString())
@@ -70,6 +70,10 @@ public class SpringSecurityConfig {
                         .requestMatchers(HttpMethod.POST,"/api/admin/register-staffByAdmin").hasAuthority(Role.ADMIN.toString())
                         .requestMatchers(HttpMethod.POST,"/api/admin/register-doctorByAdmin").hasAuthority(Role.ADMIN.toString())
                         .requestMatchers(HttpMethod.POST,"/api/admin/loginAdmin").permitAll()
+
+                        .requestMatchers(HttpMethod.POST,"/api/admin/addPatient-ByAdmin").permitAll()
+
+
 
                         .requestMatchers(HttpMethod.POST,"/api/executive/register-AdminByExecutive").permitAll()
                                                      ///api/executive/deActivatePatient-ByExecutive/patient560@gmail.com

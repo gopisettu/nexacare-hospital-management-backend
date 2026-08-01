@@ -20,6 +20,7 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -75,7 +76,8 @@ doctorRepository.save(doctor);
     }
 
     public List<DoctorResDto> getAllDoctor(Integer page,Integer size) {
-        Pageable pageable=PageRequest.of(page,size);
+        Sort sort=Sort.by(Sort.Direction.DESC,"createdAt");
+        Pageable pageable=PageRequest.of(page,size,sort);
       List<Doctor> doctor = doctorRepository.findAllActiveDoctors(pageable).getContent();
         log.info("Retrieved {} doctor(s).", doctor.size());
       return  doctor.

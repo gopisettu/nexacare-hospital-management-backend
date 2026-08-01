@@ -1,0 +1,56 @@
+package com.nexacare.hospital.controller;
+
+
+import java.time.LocalDate;
+
+
+import com.nexacare.hospital.enums.BloodGroup;
+import com.nexacare.hospital.enums.Gender;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import lombok.Data;
+
+@Data
+public class PatientRegisterByAdminDto {
+
+    // User Credentials
+    @NotBlank(message = "Username is required")
+    @Email(message = "Username must be a valid email")
+    private String username;
+
+    @NotBlank(message = "Password is required")
+    private String password;
+
+    // Patient Details
+    @NotBlank(message = "First Name is required")
+    private String firstName;
+
+    @NotBlank(message = "Last Name is required")
+    private String lastName;
+
+    @NotNull(message = "Gender is required")
+    private Gender gender;
+
+    @NotNull(message = "Date of Birth is required")
+    private LocalDate dob;
+
+    @NotBlank(message = "Aadhar Number is required")
+    private String aadharNumber;
+
+    @NotNull(message = "Blood Group is required")
+    private BloodGroup bloodGroup;
+
+    @NotBlank(message = "Phone Number is required")
+    private String phone;
+
+    @Email(message = "Invalid Email")
+    private String email;
+
+    @NotBlank(message = "Address is required")
+    private String address;
+
+    private String allergies;
+
+    private String chronicDisease;
+}
