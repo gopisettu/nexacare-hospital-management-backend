@@ -4,6 +4,9 @@ import com.nexacare.hospital.enums.Department;
 import com.nexacare.hospital.enums.Specialization;
 import com.nexacare.hospital.model.Doctor;
 import com.nexacare.hospital.model.User;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import org.springframework.data.jpa.repository.Query;
@@ -32,6 +35,11 @@ List<Doctor>searchDoctorBySpecialization(Specialization specialization);
     )
 
     List<Doctor> searchDoctorByDepartment(Department department);
+@Query("""
+SELECT d
+FROM Doctor d
+WHERE d.user.isActive = true
+""")
 
-
+Page<Doctor> findAllActiveDoctors(Pageable pageable);
 }

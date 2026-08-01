@@ -76,7 +76,7 @@ doctorRepository.save(doctor);
 
     public List<DoctorResDto> getAllDoctor(Integer page,Integer size) {
         Pageable pageable=PageRequest.of(page,size);
-      List<Doctor> doctor = doctorRepository.findAll(pageable).getContent();
+      List<Doctor> doctor = doctorRepository.findAllActiveDoctors(pageable).getContent();
         log.info("Retrieved {} doctor(s).", doctor.size());
       return  doctor.
               stream()

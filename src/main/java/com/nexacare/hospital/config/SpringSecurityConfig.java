@@ -15,8 +15,12 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.net.http.HttpRequest;
+import java.util.List;
 
 @Configuration
 @AllArgsConstructor
@@ -27,18 +31,26 @@ public class SpringSecurityConfig {
      public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
         http
-                .csrf((c)->c.disable())
+                .cors(Customizer.withDefaults())
+                .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests((auth)->
-                auth  .requestMatchers(HttpMethod.POST, "/api/patient/register-patient").permitAll()
+                auth
+
+
+
+                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/patient/register-patient").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/patient/loginPatient").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/patient/get-allPatient").hasAnyAuthority(Role.DOCTOR.toString(),Role.STAFF.toString())
-                        .requestMatchers(HttpMethod.GET, "/api/patient/get-ByUserName/**").hasAnyAuthority(Role.DOCTOR.toString(),Role.STAFF.toString())
-                        .requestMatchers(HttpMethod.PUT, "/api/patient/update-patientProfile/**").hasAuthority(Role.PATIENT.toString())
+                        .requestMatchers(HttpMethod.GET, "/api/patient/get-allPatient").permitAll()
+
+
+                        .requestMatchers(HttpMethod.GET,"/api/patient/get-PatientByUsername/{username}").permitAll()
+                        .requestMatchers(HttpMethod.PUT,"/api/patient/update-patientProfile/**").permitAll()
 
                         .requestMatchers(HttpMethod.GET, "/api/patient/searchDoctor-bySpecialization/**").hasAuthority(Role.PATIENT.toString())
                         .requestMatchers(HttpMethod.GET, "/api/patient/searchDoctor-byDepartment/**").hasAuthority(Role.PATIENT.toString())
-                        .requestMatchers(HttpMethod.POST, "/api/patient/book-doctorByPatient/**").hasAuthority(Role.PATIENT.toString())
-                        .requestMatchers(HttpMethod.GET, "/api/patient/getAppointment-ByPatient/**").hasAuthority(Role.PATIENT.toString())
+                        .requestMatchers(HttpMethod.POST,"/api/patient/book-doctorByPatient/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/patient/getAppointment-ByPatient/**").permitAll()
 
                         .requestMatchers(HttpMethod.GET,"/api/patient/view-PrescriptionByPatient/**").hasAuthority(Role.PATIENT.toString())
                         .requestMatchers(HttpMethod.PATCH, "/api/patient/payBill-ByPatient/**").hasAuthority(Role.PATIENT.toString())
@@ -47,7 +59,7 @@ public class SpringSecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/api/doctor/register-doctor").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/doctor/loginDoctor").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/doctor/get-allDoctor").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/doctor/get-ByUsername/**").hasAuthority(Role.DOCTOR.toString())
+                        .requestMatchers(HttpMethod.GET,"/api/doctor/get-DoctorByUsername/**").permitAll()
                         .requestMatchers(HttpMethod.PUT, "/api/doctor/update-doctorProfile/**").hasAuthority(Role.DOCTOR.toString())
 
                         .requestMatchers(HttpMethod.GET, "/api/doctor/allAppointment-ByDoctor/**").hasAuthority(Role.DOCTOR.toString())
@@ -60,8 +72,9 @@ public class SpringSecurityConfig {
                         .requestMatchers(HttpMethod.POST,"/api/admin/loginAdmin").permitAll()
 
                         .requestMatchers(HttpMethod.POST,"/api/executive/register-AdminByExecutive").permitAll()
-                        .requestMatchers(HttpMethod.PUT, "/api/executive/deActivatePatient-ByExecutive/**").hasAuthority(Role.EXECUTIVE.toString())
-                        .requestMatchers(HttpMethod.PUT, "/api/executive/deActivateDoctor-ByExecutive/**").hasAuthority(Role.EXECUTIVE.toString())
+                                                     ///api/executive/deActivatePatient-ByExecutive/patient560@gmail.com
+                        .requestMatchers(HttpMethod.PUT,"api/executive/deActivatePatient-ByExecutive/**").permitAll()
+                        .requestMatchers(HttpMethod.PUT, "/api/executive/deActivateDoctor-ByExecutive/**").permitAll()
 
 
                         .requestMatchers(HttpMethod.POST,"/api/staff/loginStaff").permitAll()
@@ -84,5 +97,27 @@ public class SpringSecurityConfig {
         daoAuthenticationProvider.setPasswordEncoder(passwordEncoder());
         daoAuthenticationProvider.setUserDetailsService(myUserDetailService);
         return daoAuthenticationProvider;
+    }
+
+    @Bean
+    CorsConfigurationSource corsConfigurationSource() {
+
+        CorsConfiguration configuration = new CorsConfiguration();
+
+        configuration.setAllowedOrigins(List.of("http://localhost:5173"));
+
+        configuration.setAllowedMethods(
+                List.of("GET","POST","PUT","DELETE","OPTIONS"));
+
+        configuration.setAllowedHeaders(List.of("*"));
+
+        configuration.setAllowCredentials(true);
+
+        UrlBasedCorsConfigurationSource source =
+                new UrlBasedCorsConfigurationSource();
+
+        source.registerCorsConfiguration("/**", configuration);
+
+        return source;
     }
 }

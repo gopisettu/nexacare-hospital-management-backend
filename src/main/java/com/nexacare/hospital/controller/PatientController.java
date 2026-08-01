@@ -20,6 +20,8 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/patient")
 @AllArgsConstructor
+
+@CrossOrigin(origins = "http://localhost:5173")
 public class PatientController {
     private final PatientService patientService;
     private final AppointmentService appointmentService;

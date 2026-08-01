@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/executive")
 @AllArgsConstructor
+@CrossOrigin(origins = "http://localhost:5173")
 public class ExecutiveController {
     private final AdminService adminService;
     private final DoctorService doctorService;
