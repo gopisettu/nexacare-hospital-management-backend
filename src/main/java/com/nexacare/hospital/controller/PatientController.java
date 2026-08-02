@@ -45,7 +45,7 @@ public class PatientController {
     }
 
     @GetMapping("/get-allPatient")
-    public List<PatientResDto> getAllPatient(
+    public List<PatientAdminResDto> getAllPatient(
             @RequestParam(required = false,defaultValue = "0") Integer page,
             @RequestParam(required = false,defaultValue = "4") Integer  size){
          return patientService.getAllPatient(page,size);

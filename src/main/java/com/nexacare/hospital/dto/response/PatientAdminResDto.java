@@ -1,12 +1,13 @@
 package com.nexacare.hospital.dto.response;
 
-import com.nexacare.hospital.enums.AppointmentStatus;
 import com.nexacare.hospital.enums.BloodGroup;
 import com.nexacare.hospital.enums.Gender;
+import com.nexacare.hospital.enums.PaymentStatus;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 
-public record PatientResDto(
+public record PatientAdminResDto(
         Long id,
         String username,
         String firstName,
@@ -19,6 +20,11 @@ public record PatientResDto(
         String email,
         String address,
         String allergies,
-        String chronicDisease
+        String chronicDisease,
+        PaymentStatus paymentStatus,
+        LocalDate appointmentDate,
+        LocalTime appointmentTime
+
 ) {
+
 }

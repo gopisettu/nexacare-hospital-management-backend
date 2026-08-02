@@ -43,6 +43,8 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Long> 
             @Param("appointmentDate") LocalDate appointmentDate,
             @Param("appointmentTime") LocalTime appointmentTime);
 
+    Appointment findTopByPatientIdOrderByCreatedAtDesc(Long patientId);
+
     interface MedicineBatchRepository extends JpaRepository<MedicineBatch,Long> {
 
     }
