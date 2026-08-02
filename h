@@ -1,0 +1,28 @@
+[33mcommit bc2590d50669f6550b8ccd676b28e1c883e8dd47[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m)[m
+Author: gopisettu <gopisettu3011@gmail.com>
+Date:   Sun Aug 2 19:10:41 2026 +0530
+
+    Move patient filters from frontend to backend using Criteria API
+    
+    Problem:
+    - Filters (search, gender, blood group, appointment status, sort) were applied on the frontend AFTER the backend already returned a paginated page of patients.
+    - This meant filtering only worked within the current page. A matching patient on page 2 or 3 was never shown.
+    - Example: selecting "Completed" only showed a handful of results instead of all completed patients across the dataset.
+    
+    Root cause:
+    - Pagination (LIMIT/OFFSET) happens at the database level, but filtering was happening in JavaScript after data was already cut to one page. Filtering has to happen BEFORE pagination.
+    
+    Fix:
+    - Removed all client-side filtering logic from PatientAdmin.jsx (search regex, gender/bloodGroup/appointment switch-cases, sort switch). Frontend now sends filter values as query params.
+    - Added search, gender, bloodGroup, appointmentFilter, and sortOption as optional @RequestParam values in the controller.
+    - Built a PatientSpecification class using Spring Data JPA's Specification (Criteria API) to construct the WHERE clause dynamically, adding each filter only if its value is present.
+    - Sorting (YOUNG/OLD) handled via Sort passed into Pageable, so it also runs at the database level.
+    
+    Challenges faced:
+    - isActive is not a field on Patient, it lives on the related User entity. Had to use root.join("user") to reach it, which initially threw PathElementException.
+    - Appointment filtering was the hardest part since appointment data lives in a separate Appointment table, not as a column on Patient. Solved using a correlated subquery: first find the latest appointment's createdAt for a patient (cb.greatest), then check if an appointment exists matching that timestamp and the selected filter, using cb.exists().
+    - Fixed an enum vs String mismatch bug where comparing AppointmentStatus enum values directly against String filter values always returned false, resolved using .name().
+    
+    Result:
+    - All filters and sorting now run as a single query at the database level.
+    - Pagination now correctly operates on the already-filtered result set, so every page shows accurate, non-duplicated results.

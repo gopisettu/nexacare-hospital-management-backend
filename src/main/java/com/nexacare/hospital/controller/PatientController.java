@@ -45,7 +45,7 @@ public class PatientController {
     @GetMapping("/get-allPatient")
     public List<PatientAdminResDto> getAllPatient(
             @RequestParam(required = false, defaultValue = "0") Integer page,
-            @RequestParam(required = false, defaultValue = "50") Integer size,
+            @RequestParam(required = false, defaultValue = "8") Integer size,
             @RequestParam(required = false) String search,
             @RequestParam(required = false) String gender,
             @RequestParam(required = false) String bloodGroup,
