@@ -49,7 +49,8 @@ public class PatientEntityMapper {
                 patient.getChronicDisease(),
                 appointment != null ? appointment.getPaymentStatus() : null,
                 appointment != null ? appointment.getAppointmentDate() : null,
-                appointment != null ? appointment.getAppointmentTime() : null
+                appointment != null ? appointment.getAppointmentTime() : null,
+                appointment !=null?appointment.getAppointmentStatus():null
         );
     }
 }

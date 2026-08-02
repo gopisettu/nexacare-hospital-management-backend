@@ -5,8 +5,7 @@ import com.nexacare.hospital.dto.request.LoginDto;
 import com.nexacare.hospital.dto.request.PatientProfileDto;
 import com.nexacare.hospital.dto.request.PayBillDto;
 import com.nexacare.hospital.dto.response.*;
-import com.nexacare.hospital.enums.Department;
-import com.nexacare.hospital.enums.Specialization;
+import com.nexacare.hospital.enums.*;
 import com.nexacare.hospital.service.AppointmentService;
 import com.nexacare.hospital.service.DoctorService;
 import com.nexacare.hospital.service.PatientService;
@@ -43,12 +42,17 @@ public class PatientController {
     public void updateProfile(@RequestBody PatientProfileDto patientProfileDto, @PathVariable String username){
         patientService.updateProfile(patientProfileDto,username);
     }
-
     @GetMapping("/get-allPatient")
     public List<PatientAdminResDto> getAllPatient(
-            @RequestParam(required = false,defaultValue = "0") Integer page,
-            @RequestParam(required = false,defaultValue = "4") Integer  size){
-         return patientService.getAllPatient(page,size);
+            @RequestParam(required = false, defaultValue = "0") Integer page,
+            @RequestParam(required = false, defaultValue = "50") Integer size,
+            @RequestParam(required = false) String search,
+            @RequestParam(required = false) String gender,
+            @RequestParam(required = false) String bloodGroup,
+            @RequestParam(required = false) String appointmentFilter,
+            @RequestParam(required = false) String sortOption) {
+
+        return patientService.getAllPatient(page, size, search, gender, bloodGroup, appointmentFilter, sortOption);
     }
     @GetMapping("/get-PatientByUsername/{username}")
     public  PatientResDto getPatientByUsername(@PathVariable String username){

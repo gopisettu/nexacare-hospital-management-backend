@@ -6,7 +6,7 @@ import com.nexacare.hospital.dto.request.PatientProfileDto;
 import com.nexacare.hospital.dto.response.PatientAdminResDto;
 import com.nexacare.hospital.dto.response.PatientResDto;
 import com.nexacare.hospital.dto.response.TokenDto;
-import com.nexacare.hospital.enums.Role;
+import com.nexacare.hospital.enums.*;
 import com.nexacare.hospital.exception.ResourceNotFoundException;
 import com.nexacare.hospital.mapper.dtotoentity.PatientDtoMapper;
 import com.nexacare.hospital.mapper.entitytodto.PatientEntityMapper;
@@ -18,12 +18,15 @@ import com.nexacare.hospital.repositories.PatientRepository;
 import com.nexacare.hospital.repositories.UserRepository;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import static java.util.stream.Collectors.toList;
@@ -78,24 +81,34 @@ private  final JwtService jwtService;
 
         log.info("Patient '{}' updated profile successfully.", username);
     }
+    public List<PatientAdminResDto> getAllPatient(int page, int size, String search, String gender,
+                                                  String bloodGroup, String appointmentFilter, String sortOption) {
 
-    public List<PatientAdminResDto> getAllPatient(int page, int size) {
-       Sort sort= Sort.by(Sort.Direction.DESC,"createdAt");
-        Pageable pageable=PageRequest.of(page,size,sort);
-        List<Patient> patientList=patientRepository.findAllExceptDeactivePatient(pageable).getContent();
+        Specification<Patient> spec = PatientSpecification.filterPatients(search, gender, bloodGroup, appointmentFilter);
+
+        Sort sort = Sort.by(Sort.Direction.DESC, "createdAt");
+
+        if ("YOUNG".equals(sortOption)) {
+            sort = Sort.by(Sort.Direction.DESC, "dob");
+        } else if ("OLD".equals(sortOption)) {
+            sort = Sort.by(Sort.Direction.ASC, "dob");
+        }
+
+        Pageable pageable = PageRequest.of(page, size, sort);
+
+        Page<Patient> patientPage = patientRepository.findAll(spec, pageable);
+        List<Patient> patientList = patientPage.getContent();
+
         log.info("Retrieved {} patient(s).", patientList.size());
 
         List<PatientAdminResDto> patientResDtos = patientList.stream()
                 .map(patient -> {
                     Appointment appointment = appointmentRepository.findTopByPatientIdOrderByCreatedAtDesc(patient.getId());
-
                     return patientEntityMapper.mapPatientAdminRes(patient, appointment);
                 })
                 .toList();
 
         return patientResDtos;
-
-
     }
 
     public PatientResDto getPatientByUsername(String username) {

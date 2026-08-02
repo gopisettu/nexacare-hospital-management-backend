@@ -1,5 +1,6 @@
 package com.nexacare.hospital.dto.response;
 
+import com.nexacare.hospital.enums.AppointmentStatus;
 import com.nexacare.hospital.enums.BloodGroup;
 import com.nexacare.hospital.enums.Gender;
 import com.nexacare.hospital.enums.PaymentStatus;
@@ -23,7 +24,8 @@ public record PatientAdminResDto(
         String chronicDisease,
         PaymentStatus paymentStatus,
         LocalDate appointmentDate,
-        LocalTime appointmentTime
+        LocalTime appointmentTime,
+        AppointmentStatus appointmentStatus
 
 ) {
 

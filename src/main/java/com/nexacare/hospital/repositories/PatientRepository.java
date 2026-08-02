@@ -5,6 +5,7 @@ import com.nexacare.hospital.model.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -27,4 +28,8 @@ FROM Patient p
 WHERE p.user.isActive = true
 """)
     Page<Patient> findAllExceptDeactivePatient(Pageable pageable);
+
+
+
+    Page<Patient> findAll(Specification<Patient> spec, Pageable pageable);
 }
