@@ -2,6 +2,7 @@ package com.nexacare.hospital.config;
 
 import com.nexacare.hospital.dto.response.ErrorMessageDto;
 import com.nexacare.hospital.exception.*;
+import com.nexacare.hospital.exception.FileUploadException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -128,4 +129,10 @@ public class GlobalExceptionHandler {
                 .body(new ErrorMessageDto(e.getMessage()));
     }
 
+
+    public  ResponseEntity<ErrorMessageDto> handleFileUploadException(FileUploadException e){
+        return  ResponseEntity
+                .badRequest()
+                .body(new ErrorMessageDto(e.getMessage()));
+    }
 }

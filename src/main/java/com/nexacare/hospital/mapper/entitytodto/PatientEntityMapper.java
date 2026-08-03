@@ -50,7 +50,8 @@ public class PatientEntityMapper {
                 appointment != null ? appointment.getPaymentStatus() : null,
                 appointment != null ? appointment.getAppointmentDate() : null,
                 appointment != null ? appointment.getAppointmentTime() : null,
-                appointment !=null?appointment.getAppointmentStatus():null
+                appointment !=null?appointment.getAppointmentStatus():null,
+                patient.getImageUrl()
         );
     }
 }

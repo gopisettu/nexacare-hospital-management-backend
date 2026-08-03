@@ -55,4 +55,7 @@ public class Patient {
 
      @CreationTimestamp
      private Instant createdAt;
+     private String imageUrl;
+
+
 }

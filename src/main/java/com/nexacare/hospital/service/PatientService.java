@@ -3,6 +3,7 @@ package com.nexacare.hospital.service;
 import com.nexacare.hospital.controller.PatientRegisterByAdminDto;
 import com.nexacare.hospital.dto.request.LoginDto;
 import com.nexacare.hospital.dto.request.PatientProfileDto;
+import com.nexacare.hospital.dto.request.UploadDto;
 import com.nexacare.hospital.dto.response.PatientAdminResDto;
 import com.nexacare.hospital.dto.response.PatientResDto;
 import com.nexacare.hospital.dto.response.TokenDto;
@@ -16,6 +17,7 @@ import com.nexacare.hospital.model.User;
 import com.nexacare.hospital.repositories.AppointmentRepository;
 import com.nexacare.hospital.repositories.PatientRepository;
 import com.nexacare.hospital.repositories.UserRepository;
+import com.nexacare.hospital.utility.UploadUtility;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -25,9 +27,16 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Objects;
 
 import static java.util.stream.Collectors.toList;
 
@@ -41,7 +50,9 @@ public class PatientService {
     private  final PatientEntityMapper patientEntityMapper;
     private  final PasswordEncoder passwordEncoder;
     private  final AppointmentRepository appointmentRepository;
+    private final String uploadPath="D:/CapestoneProjectHexaware/FinalHospitalManagement/frontend-hospitalmanagement/public/ProductImages";
 
+    private  final UploadUtility uploadUtility;
 private  final JwtService jwtService;
     public TokenDto loginPatient(LoginDto loginDto) {
 
@@ -157,6 +168,30 @@ patient.setAddress(patientRegisterByAdminDto.getAddress());
     patient.setChronicDisease(patientRegisterByAdminDto.getChronicDisease());
 
     patientRepository.save(patient);
+
+    }
+
+
+    public UploadDto uploadImage(long pid, MultipartFile imageFile) throws IOException {
+        Patient product=patientRepository.findById(pid)
+                .orElseThrow(()->new ResourceNotFoundException("Product Id not found"));
+
+        uploadUtility.validateImage(imageFile);
+        Path uPathDir =  Paths.get(uploadPath);
+        Path filePath =  uPathDir.resolve(Objects.requireNonNull(imageFile.getOriginalFilename()));
+
+        Files.copy(imageFile.getInputStream(), filePath , StandardCopyOption.REPLACE_EXISTING);
+
+        product.setImageUrl(filePath.toString());
+
+        product = patientRepository.save(product);
+
+        return new UploadDto(
+                product.getId(),
+                product.getImageUrl(),
+                imageFile.getOriginalFilename(),
+                "File upload success"
+        );
 
     }
 

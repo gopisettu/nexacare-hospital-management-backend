@@ -1,6 +1,7 @@
 package com.nexacare.hospital.controller;
 
 import com.nexacare.hospital.dto.request.LoginDto;
+import com.nexacare.hospital.dto.request.UploadDto;
 import com.nexacare.hospital.dto.response.TokenDto;
 import com.nexacare.hospital.service.AdminService;
 import com.nexacare.hospital.service.DoctorService;
@@ -9,6 +10,9 @@ import com.nexacare.hospital.service.StaffService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 
 @RestController
 @RequestMapping("/api/admin")
@@ -38,5 +42,11 @@ public class AdminController {
     public  void  registerFullPatient(@RequestBody PatientRegisterByAdminDto patientRegisterByAdminDto){
 patientService.registerFullPatientByAdmin(patientRegisterByAdminDto);
 }
+
+    @PutMapping("/image/upload/{patientId}")
+    public UploadDto uploadImage(@PathVariable long patientId,
+                                 @RequestParam("pImage") MultipartFile pImage) throws IOException {
+        return  patientService.uploadImage(patientId,pImage);
+    }
 
 }

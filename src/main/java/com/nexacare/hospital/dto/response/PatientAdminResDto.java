@@ -25,7 +25,8 @@ public record PatientAdminResDto(
         PaymentStatus paymentStatus,
         LocalDate appointmentDate,
         LocalTime appointmentTime,
-        AppointmentStatus appointmentStatus
+        AppointmentStatus appointmentStatus,
+        String imageUrl
 
 ) {
 
