@@ -3,6 +3,7 @@ package com.nexacare.hospital.controller;
 import com.nexacare.hospital.dto.request.LoginDto;
 import com.nexacare.hospital.dto.request.UploadDto;
 import com.nexacare.hospital.dto.response.AdminRes.DashboardAllResDto;
+import com.nexacare.hospital.dto.response.AdminRes.DoctorAdminResDto;
 import com.nexacare.hospital.dto.response.TokenDto;
 import com.nexacare.hospital.service.AdminService;
 import com.nexacare.hospital.service.DoctorService;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/admin")
@@ -56,4 +58,33 @@ patientService.registerFullPatientByAdmin(patientRegisterByAdminDto);
         return adminService.getAdminAllDashData();
 
    }
+
+    @GetMapping("/get-allDoctor")
+    public List<DoctorAdminResDto> getAllDoctor(
+
+            @RequestParam(required = false, defaultValue = "0") Integer page,
+            @RequestParam(required = false, defaultValue = "8") Integer size,
+
+            @RequestParam(required = false) String search,
+            @RequestParam(required = false) String gender,
+            @RequestParam(required = false) String department,
+            @RequestParam(required = false) String specialization,
+            @RequestParam(required = false) String qualification,
+
+            @RequestParam(required = false) String feeSort,
+            @RequestParam(required = false) String experienceSort
+    ) {
+
+        return doctorService.getAllDoctorAdmin(
+                page,
+                size,
+                search,
+                gender,
+                department,
+                specialization,
+                qualification,
+                feeSort,
+                experienceSort
+        );
+    }
 }

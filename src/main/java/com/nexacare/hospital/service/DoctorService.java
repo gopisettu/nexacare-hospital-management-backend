@@ -2,6 +2,7 @@ package com.nexacare.hospital.service;
 
 import com.nexacare.hospital.dto.request.DoctorProfileDto;
 import com.nexacare.hospital.dto.request.LoginDto;
+import com.nexacare.hospital.dto.response.AdminRes.DoctorAdminResDto;
 import com.nexacare.hospital.dto.response.DoctorRes.DoctorResDto;
 import com.nexacare.hospital.dto.response.TokenDto;
 import com.nexacare.hospital.enums.Department;
@@ -18,9 +19,11 @@ import com.nexacare.hospital.repositories.UserRepository;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -36,6 +39,7 @@ public class DoctorService {
     private final AppointmentEntityToDto appointmentEntityToDto;
     private  final JwtService jwtService;
     private  final PasswordEncoder passwordEncoder;
+    private  final  DoctorMapper doctorMapper;
 
     public TokenDto loginDoctor(LoginDto loginDto) {
         log.info("Doctor '{}' logged in successfully.", loginDto.username());
@@ -87,6 +91,72 @@ doctorRepository.save(doctor);
 
 
     }
+
+
+
+    public List<DoctorAdminResDto> getAllDoctorAdmin(
+
+            int page,
+            int size,
+
+            String search,
+            String gender,
+            String department,
+            String specialization,
+            String qualification,
+
+            String feeSort,
+            String experienceSort
+    ) {
+
+        Specification<Doctor> spec =
+                DoctorSpecification.filterDoctors(
+                        search,
+                        gender,
+                        department,
+                        specialization,
+                        qualification
+                );
+
+        Sort sort = Sort.by(Sort.Direction.DESC, "createdAt");
+
+        // Consultant Fee Sorting
+
+        if ("LOW".equals(feeSort)) {
+
+            sort = Sort.by(Sort.Direction.ASC, "consultationFee");
+
+        } else if ("HIGH".equals(feeSort)) {
+
+            sort = Sort.by(Sort.Direction.DESC, "consultationFee");
+        }
+
+        // Experience Sorting
+
+        if ("MIN".equals(experienceSort)) {
+
+            sort = Sort.by(Sort.Direction.ASC, "experience");
+
+        } else if ("MAX".equals(experienceSort)) {
+
+            sort = Sort.by(Sort.Direction.DESC, "experience");
+        }
+
+        Pageable pageable = PageRequest.of(page, size, sort);
+
+        Page<Doctor> doctorPage = doctorRepository.findAll(spec, pageable);
+
+        List<Doctor> doctorList = doctorPage.getContent();
+
+        log.info("Retrieved {} doctor(s).", doctorList.size());
+
+        return doctorList.stream()
+                .map(doctorMapper::mapDoctorAdminRes)
+                .toList();
+    }
+
+
+
 
     public DoctorResDto getDoctorByUsername(String username) {
         User user=userRepository.findByUserUsername(username)

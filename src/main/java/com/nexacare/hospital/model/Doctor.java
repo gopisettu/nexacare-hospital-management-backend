@@ -65,4 +65,5 @@ public class Doctor {
     @CreationTimestamp
     @Column(updatable = false)
     private Instant createdAt;
+    private String imageUrl;
 }
