@@ -1,6 +1,6 @@
 package com.nexacare.hospital.service;
 
-import com.nexacare.hospital.dto.response.PrescriptionResDto;
+import com.nexacare.hospital.dto.response.DoctorRes.PrescriptionResDto;
 import com.nexacare.hospital.exception.ResourceNotFoundException;
 import com.nexacare.hospital.mapper.entitytodto.PrescriptionItemToDtoMapper;
 import com.nexacare.hospital.model.PrescriptionItem;

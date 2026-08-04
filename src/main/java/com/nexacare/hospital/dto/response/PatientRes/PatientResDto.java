@@ -1,6 +1,5 @@
-package com.nexacare.hospital.dto.response;
+package com.nexacare.hospital.dto.response.PatientRes;
 
-import com.nexacare.hospital.enums.AppointmentStatus;
 import com.nexacare.hospital.enums.BloodGroup;
 import com.nexacare.hospital.enums.Gender;
 

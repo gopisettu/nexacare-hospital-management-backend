@@ -1,13 +1,10 @@
 package com.nexacare.hospital.mapper.entitytodto;
 
-import com.nexacare.hospital.dto.response.PatientAdminResDto;
-import com.nexacare.hospital.dto.response.PatientResDto;
-import com.nexacare.hospital.enums.AppointmentStatus;
+import com.nexacare.hospital.dto.response.AdminRes.PatientAdminResDto;
+import com.nexacare.hospital.dto.response.PatientRes.PatientResDto;
 import com.nexacare.hospital.model.Appointment;
 import com.nexacare.hospital.model.Patient;
 import org.springframework.stereotype.Component;
-
-import java.util.List;
 
 @Component
 public class PatientEntityMapper {

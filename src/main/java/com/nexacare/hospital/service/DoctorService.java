@@ -2,7 +2,7 @@ package com.nexacare.hospital.service;
 
 import com.nexacare.hospital.dto.request.DoctorProfileDto;
 import com.nexacare.hospital.dto.request.LoginDto;
-import com.nexacare.hospital.dto.response.DoctorResDto;
+import com.nexacare.hospital.dto.response.DoctorRes.DoctorResDto;
 import com.nexacare.hospital.dto.response.TokenDto;
 import com.nexacare.hospital.enums.Department;
 import com.nexacare.hospital.enums.Role;

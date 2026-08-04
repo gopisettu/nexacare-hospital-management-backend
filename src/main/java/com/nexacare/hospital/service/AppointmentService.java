@@ -1,9 +1,8 @@
 package com.nexacare.hospital.service;
 
 import com.nexacare.hospital.dto.request.*;
-import com.nexacare.hospital.dto.response.AppointmentResDto;
+import com.nexacare.hospital.dto.response.DoctorRes.AppointmentResDto;
 import com.nexacare.hospital.enums.AppointmentStatus;
-import com.nexacare.hospital.enums.BatchStatus;
 import com.nexacare.hospital.enums.PaymentStatus;
 import com.nexacare.hospital.exception.*;
 import com.nexacare.hospital.mapper.PrescriptionMapper;

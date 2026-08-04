@@ -4,8 +4,8 @@ import com.nexacare.hospital.controller.PatientRegisterByAdminDto;
 import com.nexacare.hospital.dto.request.LoginDto;
 import com.nexacare.hospital.dto.request.PatientProfileDto;
 import com.nexacare.hospital.dto.request.UploadDto;
-import com.nexacare.hospital.dto.response.PatientAdminResDto;
-import com.nexacare.hospital.dto.response.PatientResDto;
+import com.nexacare.hospital.dto.response.AdminRes.PatientAdminResDto;
+import com.nexacare.hospital.dto.response.PatientRes.PatientResDto;
 import com.nexacare.hospital.dto.response.TokenDto;
 import com.nexacare.hospital.enums.*;
 import com.nexacare.hospital.exception.ResourceNotFoundException;
@@ -34,11 +34,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
-
-import static java.util.stream.Collectors.toList;
 
 @Service
 @AllArgsConstructor

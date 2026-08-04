@@ -1,4 +1,4 @@
-package com.nexacare.hospital.dto.response;
+package com.nexacare.hospital.dto.response.DoctorRes;
 
 import com.nexacare.hospital.enums.Department;
 import com.nexacare.hospital.enums.Gender;

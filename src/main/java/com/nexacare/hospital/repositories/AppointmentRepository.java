@@ -1,5 +1,6 @@
 package com.nexacare.hospital.repositories;
 
+import com.nexacare.hospital.dto.response.DoctorRes.AppointmentResDto;
 import com.nexacare.hospital.model.Appointment;
 import com.nexacare.hospital.model.MedicineBatch;
 import org.springframework.data.domain.Pageable;
@@ -10,7 +11,9 @@ import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface AppointmentRepository extends JpaRepository<Appointment, Long> {
@@ -44,7 +47,7 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Long> 
             @Param("appointmentTime") LocalTime appointmentTime);
 
     Appointment findTopByPatientIdOrderByCreatedAtDesc(Long patientId);
-
+    List<Appointment> findByAppointmentDate(LocalDate appointmentDate);
     interface MedicineBatchRepository extends JpaRepository<MedicineBatch,Long> {
 
     }

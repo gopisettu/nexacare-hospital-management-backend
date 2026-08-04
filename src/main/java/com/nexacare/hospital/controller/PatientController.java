@@ -5,6 +5,11 @@ import com.nexacare.hospital.dto.request.LoginDto;
 import com.nexacare.hospital.dto.request.PatientProfileDto;
 import com.nexacare.hospital.dto.request.PayBillDto;
 import com.nexacare.hospital.dto.response.*;
+import com.nexacare.hospital.dto.response.AdminRes.PatientAdminResDto;
+import com.nexacare.hospital.dto.response.DoctorRes.AppointmentResDto;
+import com.nexacare.hospital.dto.response.DoctorRes.DoctorResDto;
+import com.nexacare.hospital.dto.response.DoctorRes.PrescriptionResDto;
+import com.nexacare.hospital.dto.response.PatientRes.PatientResDto;
 import com.nexacare.hospital.enums.*;
 import com.nexacare.hospital.service.AppointmentService;
 import com.nexacare.hospital.service.DoctorService;
@@ -55,7 +60,7 @@ public class PatientController {
         return patientService.getAllPatient(page, size, search, gender, bloodGroup, appointmentFilter, sortOption);
     }
     @GetMapping("/get-PatientByUsername/{username}")
-    public  PatientResDto getPatientByUsername(@PathVariable String username){
+    public PatientResDto getPatientByUsername(@PathVariable String username){
         return patientService.getPatientByUsername(username);
     }
 
@@ -68,8 +73,8 @@ public class PatientController {
     }
     @GetMapping("/getAppointment-ByPatient/{username}")
     public List<AppointmentResDto> showAllAppointmentByPatient(@PathVariable String username,
-                                                              @RequestParam(required = false,defaultValue = "0") Integer page,
-                                                              @RequestParam(required = false,defaultValue = "20") Integer size){
+                                                               @RequestParam(required = false,defaultValue = "0") Integer page,
+                                                               @RequestParam(required = false,defaultValue = "20") Integer size){
         return appointmentService.showAllAppointmentByPatient(username,page,size);
 
     }

@@ -1,17 +1,13 @@
 package com.nexacare.hospital.controller;
 
 import com.nexacare.hospital.dto.request.*;
-import com.nexacare.hospital.dto.response.AppointmentResDto;
-import com.nexacare.hospital.dto.response.DoctorResDto;
+import com.nexacare.hospital.dto.response.DoctorRes.AppointmentResDto;
+import com.nexacare.hospital.dto.response.DoctorRes.DoctorResDto;
 import com.nexacare.hospital.dto.response.TokenDto;
-import com.nexacare.hospital.model.Doctor;
 import com.nexacare.hospital.service.AppointmentService;
 import com.nexacare.hospital.service.DoctorService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
-import org.hibernate.validator.constraints.ParameterScriptAssert;
-import org.springframework.data.domain.Page;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;

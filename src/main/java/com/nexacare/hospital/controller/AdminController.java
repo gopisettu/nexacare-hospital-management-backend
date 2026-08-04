@@ -2,6 +2,7 @@ package com.nexacare.hospital.controller;
 
 import com.nexacare.hospital.dto.request.LoginDto;
 import com.nexacare.hospital.dto.request.UploadDto;
+import com.nexacare.hospital.dto.response.AdminRes.DashboardAllResDto;
 import com.nexacare.hospital.dto.response.TokenDto;
 import com.nexacare.hospital.service.AdminService;
 import com.nexacare.hospital.service.DoctorService;
@@ -49,4 +50,10 @@ patientService.registerFullPatientByAdmin(patientRegisterByAdminDto);
         return  patientService.uploadImage(patientId,pImage);
     }
 
+
+   @GetMapping("/admin-dashboardAllRequiredData")
+    public DashboardAllResDto getAdminAllDashData(){
+        return adminService.getAdminAllDashData();
+
+   }
 }

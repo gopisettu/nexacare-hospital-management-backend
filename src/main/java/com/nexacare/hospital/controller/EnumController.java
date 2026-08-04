@@ -1,9 +1,6 @@
 package com.nexacare.hospital.controller;
 
-import com.nexacare.hospital.enums.AppointmentStatus;
-import com.nexacare.hospital.enums.BloodGroup;
-import com.nexacare.hospital.enums.Gender;
-import com.nexacare.hospital.enums.PaymentStatus;
+import com.nexacare.hospital.enums.*;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -32,5 +29,24 @@ public class EnumController {
     @GetMapping("/payment-status")
     public PaymentStatus[] getPaymentStatus() {
         return PaymentStatus.values();
+    }
+
+
+
+
+
+    @GetMapping("/departments")
+    public Department[] getDepartments() {
+        return Department.values();
+    }
+
+    @GetMapping("/qualifications")
+    public Qualification[] getQualifications() {
+        return Qualification.values();
+    }
+
+    @GetMapping("/specializations")
+    public Specialization[] getSpecializations() {
+        return Specialization.values();
     }
 }
