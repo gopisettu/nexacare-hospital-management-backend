@@ -78,6 +78,10 @@ public class SpringSecurityConfig {
                         .requestMatchers(HttpMethod.GET,"/api/admin/get-allDoctor").permitAll()
                         .requestMatchers(HttpMethod.PUT,"/api/admin/doctorimage/upload/{doctorId}").permitAll()
 
+                        .requestMatchers(HttpMethod.GET,"/api/admin/get-allMedicines").permitAll()
+
+
+
 
 
                         .requestMatchers(HttpMethod.POST,"/api/executive/register-AdminByExecutive").permitAll()

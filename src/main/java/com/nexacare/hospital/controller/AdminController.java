@@ -4,13 +4,13 @@ import com.nexacare.hospital.dto.request.LoginDto;
 import com.nexacare.hospital.dto.request.UploadDto;
 import com.nexacare.hospital.dto.response.AdminRes.DashboardAllResDto;
 import com.nexacare.hospital.dto.response.AdminRes.DoctorAdminResDto;
+import com.nexacare.hospital.dto.response.AdminRes.MedicineAdminRes;
 import com.nexacare.hospital.dto.response.TokenDto;
-import com.nexacare.hospital.service.AdminService;
-import com.nexacare.hospital.service.DoctorService;
-import com.nexacare.hospital.service.PatientService;
-import com.nexacare.hospital.service.StaffService;
+import com.nexacare.hospital.enums.BatchStatus;
+import com.nexacare.hospital.service.*;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -26,6 +26,7 @@ public class AdminController {
     private  final StaffService staffService;
     private final AdminService adminService;
     private final PatientService patientService;
+    private final MedicineService medicineService;
 
     @PostMapping("/loginAdmin")
     public TokenDto loginAdmin(@RequestBody
@@ -92,5 +93,31 @@ public UploadDto uploadImageDoctor(@PathVariable long doctorId,
                 feeSort,
                 experienceSort
         );
+    }
+
+    @GetMapping("/get-allMedicines")
+    public Page<MedicineAdminRes> getAllMedicines(
+
+            @RequestParam(defaultValue = "0") Integer page,
+            @RequestParam(defaultValue = "8") Integer size,
+
+            @RequestParam(required = false) String search,
+
+            @RequestParam(required = false) String category,
+
+            @RequestParam(required = false) BatchStatus batchStatus,
+
+            @RequestParam(required = false) String sortOption
+    ) {
+
+        return medicineService.getAllMedicines(
+                page,
+                size,
+                search,
+                category,
+                batchStatus,
+                sortOption
+        );
+
     }
 }

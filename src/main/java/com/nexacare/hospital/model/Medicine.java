@@ -1,5 +1,6 @@
 package com.nexacare.hospital.model;
 
+import com.nexacare.hospital.enums.MedicineCategory;
 import com.nexacare.hospital.enums.MedicineForm;
 import jakarta.persistence.*;
 import lombok.*;
@@ -28,7 +29,8 @@ public class Medicine {
 
     private String manufacturer;
 
-    private String category;
+    @Enumerated(EnumType.STRING)
+    private MedicineCategory category;
 
     @Enumerated(EnumType.STRING)
     private MedicineForm medicineForm;
