@@ -46,6 +46,12 @@ public class AdminController {
 patientService.registerFullPatientByAdmin(patientRegisterByAdminDto);
 }
 
+@PutMapping("/doctorimage/upload/{doctorId}")
+public UploadDto uploadImageDoctor(@PathVariable long doctorId,
+                             @RequestParam("pImage") MultipartFile pImage) throws IOException {
+    return  patientService.uploadImageDoctor(doctorId,pImage);
+}
+
     @PutMapping("/image/upload/{patientId}")
     public UploadDto uploadImage(@PathVariable long patientId,
                                  @RequestParam("pImage") MultipartFile pImage) throws IOException {

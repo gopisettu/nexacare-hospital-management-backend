@@ -12,9 +12,11 @@ import com.nexacare.hospital.exception.ResourceNotFoundException;
 import com.nexacare.hospital.mapper.dtotoentity.PatientDtoMapper;
 import com.nexacare.hospital.mapper.entitytodto.PatientEntityMapper;
 import com.nexacare.hospital.model.Appointment;
+import com.nexacare.hospital.model.Doctor;
 import com.nexacare.hospital.model.Patient;
 import com.nexacare.hospital.model.User;
 import com.nexacare.hospital.repositories.AppointmentRepository;
+import com.nexacare.hospital.repositories.DoctorRepository;
 import com.nexacare.hospital.repositories.PatientRepository;
 import com.nexacare.hospital.repositories.UserRepository;
 import com.nexacare.hospital.utility.UploadUtility;
@@ -47,8 +49,10 @@ public class PatientService {
     private  final PatientEntityMapper patientEntityMapper;
     private  final PasswordEncoder passwordEncoder;
     private  final AppointmentRepository appointmentRepository;
-    private final String uploadPath="D:/CapestoneProjectHexaware/FinalHospitalManagement/frontend-hospitalmanagement/public/ProductImages";
+    private  final DoctorRepository doctorRepository;
 
+    private final String uploadPath="D:/CapestoneProjectHexaware/FinalHospitalManagement/frontend-hospitalmanagement/public/ProductImages";
+private  final String uploadPathDoctor="D:/CapestoneProjectHexaware/FinalHospitalManagement/frontend-hospitalmanagement/public/DoctorImages";
     private  final UploadUtility uploadUtility;
 private  final JwtService jwtService;
     public TokenDto loginPatient(LoginDto loginDto) {
@@ -186,6 +190,30 @@ patient.setAddress(patientRegisterByAdminDto.getAddress());
         return new UploadDto(
                 product.getId(),
                 product.getImageUrl(),
+                imageFile.getOriginalFilename(),
+                "File upload success"
+        );
+
+    }
+
+
+    public UploadDto uploadImageDoctor(long dId, MultipartFile imageFile) throws IOException {
+        Doctor doctor=doctorRepository.findById(dId)
+                .orElseThrow(()->new ResourceNotFoundException("Doctor Id not found"));
+
+        uploadUtility.validateImage(imageFile);
+        Path uPathDir =  Paths.get(uploadPathDoctor);
+        Path filePath =  uPathDir.resolve(Objects.requireNonNull(imageFile.getOriginalFilename()));
+
+        Files.copy(imageFile.getInputStream(), filePath , StandardCopyOption.REPLACE_EXISTING);
+
+        doctor.setImageUrl(filePath.toString());
+
+        doctor = doctorRepository.save(doctor);
+
+        return new UploadDto(
+                doctor.getId(),
+                doctor.getImageUrl(),
                 imageFile.getOriginalFilename(),
                 "File upload success"
         );
