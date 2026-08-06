@@ -1,4 +1,4 @@
-package com.nexacare.hospital.dto.response;
+package com.nexacare.hospital.dto.response.AuthRes;
 
 import java.util.Date;
 

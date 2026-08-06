@@ -1,4 +1,4 @@
-package com.nexacare.hospital.dto.request;
+package com.nexacare.hospital.dto.request.PatientReq;
 
 import com.nexacare.hospital.enums.BloodGroup;
 import com.nexacare.hospital.enums.Gender;
@@ -26,7 +26,9 @@ public record PatientProfileDto(
         @NotBlank(message = "Email is mandatory")
         @Email(message = "Email must be valid")
         String email,
+        @NotBlank(message = "Address is mandatory")
         String address,
+
         String allergies,
         String chronicDisease
 ) {

@@ -1,13 +1,14 @@
 package com.nexacare.hospital.service;
 
-import com.nexacare.hospital.controller.PatientRegisterByAdminDto;
-import com.nexacare.hospital.dto.request.LoginDto;
-import com.nexacare.hospital.dto.request.PatientProfileDto;
+import com.nexacare.hospital.dto.response.PatientRegisterByAdminDto;
+import com.nexacare.hospital.dto.request.AuthReq.LoginDto;
+import com.nexacare.hospital.dto.request.PatientReq.PatientProfileDto;
 import com.nexacare.hospital.dto.request.UploadDto;
 import com.nexacare.hospital.dto.response.AdminRes.PatientAdminResDto;
 import com.nexacare.hospital.dto.response.PatientRes.PatientResDto;
-import com.nexacare.hospital.dto.response.TokenDto;
+import com.nexacare.hospital.dto.response.AuthRes.TokenDto;
 import com.nexacare.hospital.enums.*;
+import com.nexacare.hospital.exception.IllegalOperationException;
 import com.nexacare.hospital.exception.ResourceNotFoundException;
 import com.nexacare.hospital.mapper.dtotoentity.PatientDtoMapper;
 import com.nexacare.hospital.mapper.entitytodto.PatientEntityMapper;
@@ -84,11 +85,32 @@ private  final JwtService jwtService;
     }
 
     public void updateProfile(PatientProfileDto patientProfileDto, String username) {
-        User user=userRepository.findByUserUsername(username)
-                .orElseThrow(()->new ResourceNotFoundException("Patient UserName not found"));
-         Patient patient=patientRepository.findByUserId(user.getId()).orElseThrow(()-> new ResourceNotFoundException("Patient Id not found"));
+        User user = userRepository.findByUserUsername(username)
+                .orElseThrow(() -> new ResourceNotFoundException("Patient username not found"));
+
+        Patient patient = patientRepository.findByUserId(user.getId())
+                .orElseThrow(() -> new ResourceNotFoundException("Patient not found"));
+
+        if (!patient.getPhone().equals(patientProfileDto.phone())
+                && patientRepository.existsByPhone(patientProfileDto.phone())) {
+
+            throw new IllegalOperationException("Phone number already exists.");
+        }
+
+        if (!patient.getEmail().equals(patientProfileDto.email())
+                && patientRepository.existsByEmail(patientProfileDto.email())) {
+
+            throw new IllegalOperationException("Email already exists.");
+        }
+
+        if (!patient.getAadharNumber().equals(patientProfileDto.aadharNumber())
+                && patientRepository.existsByAadharNumber(patientProfileDto.aadharNumber())) {
+
+            throw new IllegalOperationException("Aadhar number already exists.");
+        }
+
                patient= PatientDtoMapper.mapDtoToPatient(patientProfileDto,patient);
-         patientRepository.save(patient);
+
         patientRepository.save(patient);
 
         log.info("Patient '{}' updated profile successfully.", username);
@@ -141,7 +163,7 @@ private  final JwtService jwtService;
         User user =userRepository.findByUserUsername(username)
                         .orElseThrow(()->new ResourceNotFoundException("User nameName not found"));
        user.setActive(false);
-        userRepository.save(user);
+
         userRepository.save(user);
 
         log.info("Patient '{}' deactivated successfully.", username);
@@ -149,6 +171,21 @@ private  final JwtService jwtService;
 
 
     public void registerFullPatientByAdmin(PatientRegisterByAdminDto patientRegisterByAdminDto) {
+        if (userRepository.existsByUsername(patientRegisterByAdminDto.getUsername())) {
+            throw new IllegalOperationException("Username already exists.");
+        }
+
+        if (patientRepository.existsByAadharNumber(patientRegisterByAdminDto.getAadharNumber())) {
+            throw new IllegalOperationException("Aadhar number already exists.");
+        }
+
+        if (patientRepository.existsByPhone(patientRegisterByAdminDto.getPhone())) {
+            throw new IllegalOperationException("Phone number already exists.");
+        }
+
+        if (patientRepository.existsByEmail(patientRegisterByAdminDto.getEmail())) {
+            throw new IllegalOperationException("Email already exists.");
+        }
         User user=new User();
         user.setRole(Role.PATIENT);
         user.setUsername(patientRegisterByAdminDto.getUsername());

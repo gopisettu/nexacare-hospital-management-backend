@@ -2,8 +2,8 @@ package com.nexacare.hospital.service;
 
 
 import com.nexacare.hospital.dto.request.AddMedicineDto;
-import com.nexacare.hospital.dto.request.LoginDto;
-import com.nexacare.hospital.dto.response.TokenDto;
+import com.nexacare.hospital.dto.request.AuthReq.LoginDto;
+import com.nexacare.hospital.dto.response.AuthRes.TokenDto;
 import com.nexacare.hospital.enums.BatchStatus;
 import com.nexacare.hospital.enums.Role;
 import com.nexacare.hospital.exception.ResourceNotFoundException;

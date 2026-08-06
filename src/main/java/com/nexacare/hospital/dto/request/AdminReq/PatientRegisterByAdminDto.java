@@ -1,10 +1,9 @@
-package com.nexacare.hospital.dto.request;
+package com.nexacare.hospital.dto.request.AdminReq;
 import java.time.LocalDate;
 import com.nexacare.hospital.enums.BloodGroup;
 import com.nexacare.hospital.enums.Gender;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 @Data

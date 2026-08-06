@@ -1,6 +1,6 @@
 package com.nexacare.hospital.mapper.dtotoentity;
 
-import com.nexacare.hospital.dto.request.PatientProfileDto;
+import com.nexacare.hospital.dto.request.PatientReq.PatientProfileDto;
 import com.nexacare.hospital.model.Patient;
 import org.springframework.stereotype.Component;
 

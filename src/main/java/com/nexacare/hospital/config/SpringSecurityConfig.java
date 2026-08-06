@@ -79,6 +79,8 @@ public class SpringSecurityConfig {
                         .requestMatchers(HttpMethod.PUT,"/api/admin/doctorimage/upload/{doctorId}").permitAll()
 
                         .requestMatchers(HttpMethod.GET,"/api/admin/get-allMedicines").permitAll()
+                        .requestMatchers(HttpMethod.POST,"/api/admin/addDoctor-ByAdmin").permitAll()
+                        .requestMatchers(HttpMethod.PUT,"/api/admin/updateDoctor-ByAdmin/{username}").permitAll()
 
 
 

@@ -1,9 +1,13 @@
 package com.nexacare.hospital.controller;
 
-import com.nexacare.hospital.dto.request.*;
+import com.nexacare.hospital.dto.request.AuthReq.LoginDto;
+import com.nexacare.hospital.dto.request.DoctorReq.DoctorProfileDto;
+import com.nexacare.hospital.dto.request.DoctorReq.RescheduleAppointmentDto;
+import com.nexacare.hospital.dto.request.DoctorReq.SubmitPrescriptionDto;
+import com.nexacare.hospital.dto.request.DoctorReq.UpdateAppointmentStatusDto;
 import com.nexacare.hospital.dto.response.DoctorRes.AppointmentResDto;
 import com.nexacare.hospital.dto.response.DoctorRes.DoctorResDto;
-import com.nexacare.hospital.dto.response.TokenDto;
+import com.nexacare.hospital.dto.response.AuthRes.TokenDto;
 import com.nexacare.hospital.service.AppointmentService;
 import com.nexacare.hospital.service.DoctorService;
 import jakarta.validation.Valid;
@@ -21,22 +25,22 @@ public class DoctorController {
     private  final AppointmentService appointmentService;
 
     @PostMapping("/loginDoctor")
-    public TokenDto loginDoctor(@RequestBody LoginDto loginDto ){
+    public TokenDto loginDoctor( @Valid @RequestBody LoginDto loginDto ){
         return doctorService.loginDoctor(loginDto);
     }
 
     @PutMapping("/update-doctorProfile/{username}")
-    public void updateProfile(@Valid @RequestBody DoctorProfileDto doctorProfileDto,@PathVariable String username){
+    public void updateProfile(@Valid @RequestBody DoctorProfileDto doctorProfileDto, @PathVariable String username){
         doctorService.updateProfile(doctorProfileDto,username);
     }
     @GetMapping("/get-allDoctor")
-    public List<DoctorResDto> getAllDoctor(@RequestParam(required = false,defaultValue = "0") Integer page,
+    public List<DoctorResDto> getAllDoctor( @RequestParam(required = false,defaultValue = "0") Integer page,
                                            @RequestParam(required = true,defaultValue = "4") Integer size){
         return doctorService.getAllDoctor(page,size);
     }
 
     @GetMapping("/get-DoctorByUsername/{username}")
-    public DoctorResDto getDoctorByUsername(@PathVariable String username){
+    public DoctorResDto getDoctorByUsername( @PathVariable String username){
         return doctorService.getDoctorByUsername(username);
     }
 
@@ -49,16 +53,16 @@ public class DoctorController {
     }
 
     @PatchMapping("/updateAppointmentStatus-ByDoctor/{username}")
-    public void updateAppointmentStatus(@PathVariable String username,@RequestBody UpdateAppointmentStatusDto updateAppointmentStatusDto){
+    public void updateAppointmentStatus(@PathVariable String username, @Valid @RequestBody UpdateAppointmentStatusDto updateAppointmentStatusDto){
         appointmentService.updateAppointmentStatus(username,updateAppointmentStatusDto);
 
     }
     @PatchMapping("/rescheduleAppointment-ByDoctor/{username}")
-    public  void rescheduleAppointment(@PathVariable String username, @RequestBody RescheduleAppointmentDto rescheduleAppointmentDto){
+    public  void rescheduleAppointment(@PathVariable String username, @Valid @RequestBody RescheduleAppointmentDto rescheduleAppointmentDto){
         appointmentService.rescheduleAppointment(username,rescheduleAppointmentDto);
     }
     @PostMapping("/submitPrescription-byDoctor/{username}")
-    public void submitPrescription(@PathVariable String username,@RequestBody SubmitPrescriptionDto submitPrescriptionDto)
+    public void submitPrescription(@PathVariable String username, @Valid @RequestBody SubmitPrescriptionDto submitPrescriptionDto)
     {
         appointmentService.submitPrescription(username,submitPrescriptionDto);
     }

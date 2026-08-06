@@ -1,13 +1,12 @@
 package com.nexacare.hospital.service;
 
-import com.nexacare.hospital.dto.request.LoginDto;
+import com.nexacare.hospital.dto.request.AuthReq.LoginDto;
 import com.nexacare.hospital.dto.response.AdminRes.DashboardAllResDto;
 import com.nexacare.hospital.dto.response.AdminRes.DashboardStatsDTO;
 import com.nexacare.hospital.dto.response.AdminRes.MedicineResDto;
 import com.nexacare.hospital.dto.response.DoctorRes.AppointmentResDto;
-import com.nexacare.hospital.dto.response.TokenDto;
+import com.nexacare.hospital.dto.response.AuthRes.TokenDto;
 import com.nexacare.hospital.enums.Role;
-import com.nexacare.hospital.mapper.dtotoentity.MedicineMapper;
 import com.nexacare.hospital.mapper.entitytodto.AppointmentEntityToDto;
 import com.nexacare.hospital.mapper.entitytodto.MedicineEntityToDto;
 import com.nexacare.hospital.model.User;

@@ -1,6 +1,7 @@
 package com.nexacare.hospital.service;
 
-import com.nexacare.hospital.dto.request.*;
+import com.nexacare.hospital.dto.request.DoctorReq.*;
+import com.nexacare.hospital.dto.request.PatientReq.PayBillDto;
 import com.nexacare.hospital.dto.response.DoctorRes.AppointmentResDto;
 import com.nexacare.hospital.enums.AppointmentStatus;
 import com.nexacare.hospital.enums.PaymentStatus;

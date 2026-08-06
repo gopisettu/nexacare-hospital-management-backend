@@ -1,6 +1,6 @@
 package com.nexacare.hospital.config;
 
-import com.nexacare.hospital.dto.response.ErrorMessageDto;
+import com.nexacare.hospital.dto.response.ErrorRes.ErrorMessageDto;
 import com.nexacare.hospital.exception.*;
 import com.nexacare.hospital.exception.FileUploadException;
 import org.slf4j.Logger;
@@ -12,8 +12,6 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import java.sql.SQLIntegrityConstraintViolationException;
-import java.util.HashMap;
-import java.util.Map;
 
 @ControllerAdvice
 
@@ -82,18 +80,19 @@ public class GlobalExceptionHandler {
 
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<?> handleValidation(
+    public ResponseEntity<ErrorMessageDto> handleValidation(
             MethodArgumentNotValidException ex){
 
-        Map<String,String> errors = new HashMap<>();
-
-        ex.getBindingResult()
+        String message = ex.getBindingResult()
                 .getFieldErrors()
-                .forEach(err ->
-                        errors.put(err.getField(), err.getDefaultMessage()));
-        logger.warn("Validation failed: {}", errors);
+                .get(0)
+                .getDefaultMessage();
 
-        return ResponseEntity.badRequest().body(errors);
+        logger.warn("Validation failed: {}", message);
+
+        return ResponseEntity
+                .badRequest()
+                .body(new ErrorMessageDto(message));
     }
     @ExceptionHandler(UnauthorizedOperationException.class)
     public ResponseEntity<ErrorMessageDto> handleUnauthorizedOperationException(

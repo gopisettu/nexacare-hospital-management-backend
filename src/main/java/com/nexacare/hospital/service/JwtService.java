@@ -1,6 +1,6 @@
 package com.nexacare.hospital.service;
 
-import com.nexacare.hospital.dto.response.TokenDto;
+import com.nexacare.hospital.dto.response.AuthRes.TokenDto;
 
 
 import lombok.extern.slf4j.Slf4j;

@@ -1,11 +1,14 @@
 package com.nexacare.hospital.controller;
 
-import com.nexacare.hospital.dto.request.LoginDto;
+import com.nexacare.hospital.dto.request.DoctorReq.DoctorProfileDto;
+import com.nexacare.hospital.dto.request.AdminReq.DoctorRegisterByAdminDto;
+import com.nexacare.hospital.dto.request.AuthReq.LoginDto;
 import com.nexacare.hospital.dto.request.UploadDto;
 import com.nexacare.hospital.dto.response.AdminRes.DashboardAllResDto;
 import com.nexacare.hospital.dto.response.AdminRes.DoctorAdminResDto;
 import com.nexacare.hospital.dto.response.AdminRes.MedicineAdminRes;
-import com.nexacare.hospital.dto.response.TokenDto;
+import com.nexacare.hospital.dto.response.PatientRegisterByAdminDto;
+import com.nexacare.hospital.dto.response.AuthRes.TokenDto;
 import com.nexacare.hospital.enums.BatchStatus;
 import com.nexacare.hospital.service.*;
 import jakarta.validation.Valid;
@@ -46,6 +49,19 @@ public class AdminController {
     public  void  registerFullPatient(@RequestBody PatientRegisterByAdminDto patientRegisterByAdminDto){
 patientService.registerFullPatientByAdmin(patientRegisterByAdminDto);
 }
+    @PostMapping("/addDoctor-ByAdmin")
+    public void registerDoctorByAdmin(
+            @RequestBody DoctorRegisterByAdminDto doctorRegisterByAdminDto
+    ) {
+        doctorService.registerDoctorByAdmin(doctorRegisterByAdminDto);
+    }
+    @PutMapping("/updateDoctor-ByAdmin/{username}")
+    public void updateDoctorByAdmin(
+            @PathVariable String username,
+            @RequestBody DoctorProfileDto doctorProfileDto
+    ) {
+        doctorService.updateDoctorByAdmin(username, doctorProfileDto);
+    }
 
 @PutMapping("/doctorimage/upload/{doctorId}")
 public UploadDto uploadImageDoctor(@PathVariable long doctorId,

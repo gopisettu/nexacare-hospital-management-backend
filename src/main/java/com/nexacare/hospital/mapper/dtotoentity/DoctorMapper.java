@@ -1,12 +1,9 @@
 package com.nexacare.hospital.mapper.dtotoentity;
 
-import com.nexacare.hospital.dto.request.DoctorProfileDto;
+import com.nexacare.hospital.dto.request.DoctorReq.DoctorProfileDto;
 import com.nexacare.hospital.dto.response.AdminRes.DoctorAdminResDto;
 import com.nexacare.hospital.model.Doctor;
-import com.nexacare.hospital.model.User;
 import org.springframework.stereotype.Component;
-
-import java.math.BigDecimal;
 
 @Component
 public class DoctorMapper {

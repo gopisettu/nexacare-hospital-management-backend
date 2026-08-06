@@ -1,13 +1,15 @@
 package com.nexacare.hospital.service;
 
-import com.nexacare.hospital.dto.request.DoctorProfileDto;
-import com.nexacare.hospital.dto.request.LoginDto;
+import com.nexacare.hospital.dto.request.DoctorReq.DoctorProfileDto;
+import com.nexacare.hospital.dto.request.AdminReq.DoctorRegisterByAdminDto;
+import com.nexacare.hospital.dto.request.AuthReq.LoginDto;
 import com.nexacare.hospital.dto.response.AdminRes.DoctorAdminResDto;
 import com.nexacare.hospital.dto.response.DoctorRes.DoctorResDto;
-import com.nexacare.hospital.dto.response.TokenDto;
+import com.nexacare.hospital.dto.response.AuthRes.TokenDto;
 import com.nexacare.hospital.enums.Department;
 import com.nexacare.hospital.enums.Role;
 import com.nexacare.hospital.enums.Specialization;
+import com.nexacare.hospital.exception.IllegalOperationException;
 import com.nexacare.hospital.exception.ResourceNotFoundException;
 import com.nexacare.hospital.mapper.dtotoentity.DoctorMapper;
 import com.nexacare.hospital.mapper.entitytodto.AppointmentEntityToDto;
@@ -107,6 +109,7 @@ doctorRepository.save(doctor);
 
             String feeSort,
             String experienceSort
+
     ) {
 
         Specification<Doctor> spec =
@@ -119,6 +122,7 @@ doctorRepository.save(doctor);
                 );
 
         Sort sort = Sort.by(Sort.Direction.DESC, "createdAt");
+
 
         // Consultant Fee Sorting
 
@@ -135,11 +139,11 @@ doctorRepository.save(doctor);
 
         if ("MIN".equals(experienceSort)) {
 
-            sort = Sort.by(Sort.Direction.ASC, "experience");
+            sort = Sort.by(Sort.Direction.ASC, "totalExperienceYear");
 
         } else if ("MAX".equals(experienceSort)) {
 
-            sort = Sort.by(Sort.Direction.DESC, "experience");
+            sort = Sort.by(Sort.Direction.DESC, "totalExperienceYear");
         }
 
         Pageable pageable = PageRequest.of(page, size, sort);
@@ -216,4 +220,69 @@ doctorRepository.save(doctor);
     }
 
 
+    public void registerDoctorByAdmin(DoctorRegisterByAdminDto dto) {
+        if (userRepository.existsByUsername(dto.username())) {
+            throw new IllegalOperationException("Username already exists.");
+        }
+
+        if (doctorRepository.existsByPhone(dto.phone())) {
+            throw new IllegalOperationException("Phone number already exists.");
+        }
+
+        if (doctorRepository.existsByEmail(dto.email())) {
+            throw new IllegalOperationException("Email already exists.");
+        }
+
+        User user = new User();
+        user.setRole(Role.DOCTOR);
+        user.setUsername(dto.username());
+        user.setPassword(dto.password());
+
+        userRepository.save(user);
+
+        Doctor doctor = new Doctor();
+
+        doctor.setUser(user);
+        doctor.setFirstName(dto.firstName());
+        doctor.setLastName(dto.lastName());
+        doctor.setGender(dto.gender());
+        doctor.setPhone(dto.phone());
+        doctor.setEmail(dto.email());
+        doctor.setAddress(dto.address());
+
+        doctor.setQualification(dto.qualification());
+        doctor.setDepartment(dto.department());
+        doctor.setSpecialization(dto.specialization());
+
+        doctor.setTotalExperienceYear(dto.totalExperienceYear());
+        doctor.setConsultationFee(dto.consultationFee());
+
+        doctorRepository.save(doctor);
+    }
+
+    public void updateDoctorByAdmin(
+            String username,
+            DoctorProfileDto dto
+    ) {
+
+        Doctor doctor = doctorRepository.findByUserUsername(username)
+                .orElseThrow(() -> new RuntimeException("Doctor not found"));
+
+        doctor.setFirstName(dto.firstName());
+        doctor.setLastName(dto.lastName());
+        doctor.setGender(dto.gender());
+
+        doctor.setPhone(dto.phone());
+        doctor.setEmail(dto.email());
+        doctor.setAddress(dto.address());
+
+        doctor.setQualification(dto.qualification());
+        doctor.setDepartment(dto.department());
+        doctor.setSpecialization(dto.specialization());
+
+        doctor.setTotalExperienceYear(dto.totalExperienceYear());
+        doctor.setConsultationFee(dto.consultationFee());
+
+        doctorRepository.save(doctor);
+    }
 }

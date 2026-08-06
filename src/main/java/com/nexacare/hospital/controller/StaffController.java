@@ -2,8 +2,8 @@ package com.nexacare.hospital.controller;
 
 
 import com.nexacare.hospital.dto.request.AddMedicineDto;
-import com.nexacare.hospital.dto.request.LoginDto;
-import com.nexacare.hospital.dto.response.TokenDto;
+import com.nexacare.hospital.dto.request.AuthReq.LoginDto;
+import com.nexacare.hospital.dto.response.AuthRes.TokenDto;
 import com.nexacare.hospital.service.StaffService;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;

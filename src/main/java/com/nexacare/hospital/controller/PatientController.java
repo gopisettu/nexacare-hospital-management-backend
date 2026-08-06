@@ -1,11 +1,11 @@
 package com.nexacare.hospital.controller;
 
-import com.nexacare.hospital.dto.request.BookAppointmentDto;
-import com.nexacare.hospital.dto.request.LoginDto;
-import com.nexacare.hospital.dto.request.PatientProfileDto;
-import com.nexacare.hospital.dto.request.PayBillDto;
-import com.nexacare.hospital.dto.response.*;
+import com.nexacare.hospital.dto.request.DoctorReq.BookAppointmentDto;
+import com.nexacare.hospital.dto.request.AuthReq.LoginDto;
+import com.nexacare.hospital.dto.request.PatientReq.PatientProfileDto;
+import com.nexacare.hospital.dto.request.PatientReq.PayBillDto;
 import com.nexacare.hospital.dto.response.AdminRes.PatientAdminResDto;
+import com.nexacare.hospital.dto.response.AuthRes.TokenDto;
 import com.nexacare.hospital.dto.response.DoctorRes.AppointmentResDto;
 import com.nexacare.hospital.dto.response.DoctorRes.DoctorResDto;
 import com.nexacare.hospital.dto.response.DoctorRes.PrescriptionResDto;
@@ -33,18 +33,18 @@ public class PatientController {
     private final PrescriptionService prescriptionService;
 
     @PostMapping("/register-patient")
-    public void registerPatient(@RequestBody LoginDto loginDto){
+    public void registerPatient( @Valid @RequestBody LoginDto loginDto){
          patientService.registerPatient(loginDto);
     }
   @PostMapping("/loginPatient")
-  public TokenDto loginPatient(@RequestBody
+  public TokenDto loginPatient(@Valid @RequestBody
                                LoginDto loginDto){
         return patientService.loginPatient(loginDto);
   }
 
 
     @PutMapping("/update-patientProfile/{username}")
-    public void updateProfile(@RequestBody PatientProfileDto patientProfileDto, @PathVariable String username){
+    public void updateProfile( @Valid @RequestBody PatientProfileDto patientProfileDto, @PathVariable String username){
         patientService.updateProfile(patientProfileDto,username);
     }
     @GetMapping("/get-allPatient")
@@ -67,7 +67,7 @@ public class PatientController {
 
 
     @PostMapping("/book-doctorByPatient/{username}")
-    public void bookDoctor(@PathVariable String username, @RequestBody BookAppointmentDto bookAppointmentDto){
+    public void bookDoctor(@PathVariable String username, @Valid @RequestBody BookAppointmentDto bookAppointmentDto){
         appointmentService.bookDoctor(username, bookAppointmentDto);
 
     }
