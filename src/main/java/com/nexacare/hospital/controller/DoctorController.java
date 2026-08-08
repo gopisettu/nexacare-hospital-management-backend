@@ -6,6 +6,7 @@ import com.nexacare.hospital.dto.request.DoctorReq.RescheduleAppointmentDto;
 import com.nexacare.hospital.dto.request.DoctorReq.SubmitPrescriptionDto;
 import com.nexacare.hospital.dto.request.DoctorReq.UpdateAppointmentStatusDto;
 import com.nexacare.hospital.dto.response.DoctorRes.AppointmentResDto;
+import com.nexacare.hospital.dto.response.DoctorRes.DoctorDashboardDto;
 import com.nexacare.hospital.dto.response.DoctorRes.DoctorResDto;
 import com.nexacare.hospital.dto.response.AuthRes.TokenDto;
 import com.nexacare.hospital.service.AppointmentService;
@@ -65,6 +66,13 @@ public class DoctorController {
     public void submitPrescription(@PathVariable String username, @Valid @RequestBody SubmitPrescriptionDto submitPrescriptionDto)
     {
         appointmentService.submitPrescription(username,submitPrescriptionDto);
+    }
+
+    @GetMapping("/dashboard/{username}")
+    public DoctorDashboardDto getDashboard(
+            @PathVariable String username){
+
+        return doctorService.getDoctorDashboard(username);
     }
 }
 

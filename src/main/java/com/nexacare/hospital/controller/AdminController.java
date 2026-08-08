@@ -3,7 +3,8 @@ package com.nexacare.hospital.controller;
 import com.nexacare.hospital.dto.request.DoctorReq.DoctorProfileDto;
 import com.nexacare.hospital.dto.request.AdminReq.DoctorRegisterByAdminDto;
 import com.nexacare.hospital.dto.request.AuthReq.LoginDto;
-import com.nexacare.hospital.dto.request.UploadDto;
+import com.nexacare.hospital.dto.request.ImageUploadReq.UploadDto;
+import com.nexacare.hospital.dto.request.PatientReq.PatientProfileDto;
 import com.nexacare.hospital.dto.response.AdminRes.DashboardAllResDto;
 import com.nexacare.hospital.dto.response.AdminRes.DoctorAdminResDto;
 import com.nexacare.hospital.dto.response.AdminRes.MedicineAdminRes;
@@ -46,19 +47,24 @@ public class AdminController {
      staffService.registerStaff(loginDto);
     }
 @PostMapping("/addPatient-ByAdmin")
-    public  void  registerFullPatient(@RequestBody PatientRegisterByAdminDto patientRegisterByAdminDto){
+    public  void  registerFullPatient( @Valid @RequestBody PatientRegisterByAdminDto patientRegisterByAdminDto){
 patientService.registerFullPatientByAdmin(patientRegisterByAdminDto);
 }
+
+    @PutMapping("/update-patientProfile/{username}")
+    public void updateProfile(@Valid @RequestBody PatientProfileDto patientProfileDto, @PathVariable String username){
+        patientService.updateProfile(patientProfileDto,username);
+    }
     @PostMapping("/addDoctor-ByAdmin")
     public void registerDoctorByAdmin(
-            @RequestBody DoctorRegisterByAdminDto doctorRegisterByAdminDto
+            @Valid @RequestBody DoctorRegisterByAdminDto doctorRegisterByAdminDto
     ) {
         doctorService.registerDoctorByAdmin(doctorRegisterByAdminDto);
     }
     @PutMapping("/updateDoctor-ByAdmin/{username}")
     public void updateDoctorByAdmin(
             @PathVariable String username,
-            @RequestBody DoctorProfileDto doctorProfileDto
+            @Valid @RequestBody DoctorProfileDto doctorProfileDto
     ) {
         doctorService.updateDoctorByAdmin(username, doctorProfileDto);
     }

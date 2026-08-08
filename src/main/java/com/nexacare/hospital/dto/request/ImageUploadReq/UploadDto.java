@@ -1,4 +1,4 @@
-package com.nexacare.hospital.dto.request;
+package com.nexacare.hospital.dto.request.ImageUploadReq;
 
 public record
 UploadDto(

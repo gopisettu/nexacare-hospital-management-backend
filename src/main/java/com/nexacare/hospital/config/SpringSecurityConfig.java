@@ -66,12 +66,14 @@ public class SpringSecurityConfig {
                         .requestMatchers(HttpMethod.PATCH, "/api/doctor/rescheduleAppointment-ByDoctor/**").hasAuthority(Role.DOCTOR.toString())
                         .requestMatchers(HttpMethod.PATCH, "/api/doctor/updateAppointmentStatus-ByDoctor/**").hasAuthority(Role.DOCTOR.toString())
                         .requestMatchers(HttpMethod.POST, "/api/doctor/submitPrescription-byDoctor/**").hasAuthority(Role.DOCTOR.toString())
+                        .requestMatchers(HttpMethod.GET,"/api/doctor/dashboard/{username}").permitAll()
 
                         .requestMatchers(HttpMethod.POST,"/api/admin/register-staffByAdmin").hasAuthority(Role.ADMIN.toString())
                         .requestMatchers(HttpMethod.POST,"/api/admin/register-doctorByAdmin").hasAuthority(Role.ADMIN.toString())
                         .requestMatchers(HttpMethod.POST,"/api/admin/loginAdmin").permitAll()
 
                         .requestMatchers(HttpMethod.POST,"/api/admin/addPatient-ByAdmin").permitAll()
+                        .requestMatchers(HttpMethod.PUT,"/api/admin/update-patientProfile/{username}").permitAll()
                         .requestMatchers(HttpMethod.PUT,"/api/admin/image/upload/{patientId}").permitAll()
                         .requestMatchers(HttpMethod.GET,"/api/admin/admin-dashboardAllRequiredData").permitAll()
 

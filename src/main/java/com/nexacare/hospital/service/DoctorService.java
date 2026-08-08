@@ -4,8 +4,11 @@ import com.nexacare.hospital.dto.request.DoctorReq.DoctorProfileDto;
 import com.nexacare.hospital.dto.request.AdminReq.DoctorRegisterByAdminDto;
 import com.nexacare.hospital.dto.request.AuthReq.LoginDto;
 import com.nexacare.hospital.dto.response.AdminRes.DoctorAdminResDto;
+import com.nexacare.hospital.dto.response.DoctorRes.AppointmentResDto;
+import com.nexacare.hospital.dto.response.DoctorRes.DoctorDashboardDto;
 import com.nexacare.hospital.dto.response.DoctorRes.DoctorResDto;
 import com.nexacare.hospital.dto.response.AuthRes.TokenDto;
+import com.nexacare.hospital.enums.AppointmentStatus;
 import com.nexacare.hospital.enums.Department;
 import com.nexacare.hospital.enums.Role;
 import com.nexacare.hospital.enums.Specialization;
@@ -14,8 +17,10 @@ import com.nexacare.hospital.exception.ResourceNotFoundException;
 import com.nexacare.hospital.mapper.dtotoentity.DoctorMapper;
 import com.nexacare.hospital.mapper.entitytodto.AppointmentEntityToDto;
 import com.nexacare.hospital.mapper.entitytodto.DoctorDtoMapper;
+import com.nexacare.hospital.model.Appointment;
 import com.nexacare.hospital.model.Doctor;
 import com.nexacare.hospital.model.User;
+import com.nexacare.hospital.repositories.AppointmentRepository;
 import com.nexacare.hospital.repositories.DoctorRepository;
 import com.nexacare.hospital.repositories.UserRepository;
 import jakarta.validation.Valid;
@@ -29,7 +34,11 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -42,6 +51,7 @@ public class DoctorService {
     private  final JwtService jwtService;
     private  final PasswordEncoder passwordEncoder;
     private  final  DoctorMapper doctorMapper;
+    private final AppointmentRepository appointmentRepository;
 
     public TokenDto loginDoctor(LoginDto loginDto) {
         log.info("Doctor '{}' logged in successfully.", loginDto.username());
@@ -284,5 +294,86 @@ doctorRepository.save(doctor);
         doctor.setConsultationFee(dto.consultationFee());
 
         doctorRepository.save(doctor);
+    }
+
+    public DoctorDashboardDto getDoctorDashboard(String username) {
+
+        User user = userRepository.findByUserUsername(username)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("Doctor username not found"));
+
+        Doctor doctor = doctorRepository.findByUserId(user.getId())
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("Doctor not found"));
+
+        DoctorResDto doctorDto =
+                doctorDtoMapper.mapDoctorEntityToDto(doctor);
+
+        List<Appointment> appointments =
+                appointmentRepository.findByDoctorId(doctor.getId());
+
+        LocalDate today = LocalDate.now();
+
+        long totalAppointments = appointments.size();
+
+        long todayAppointments =
+                appointments.stream()
+                        .filter(a -> a.getAppointmentDate().equals(today))
+                        .count();
+
+        long completedAppointments =
+                appointments.stream()
+                        .filter(a ->
+                                a.getAppointmentStatus()
+                                        == AppointmentStatus.COMPLETED)
+                        .count();
+
+        long totalPatients =
+                appointments.stream()
+                        .map(a -> a.getPatient().getId())
+                        .distinct()
+                        .count();
+
+        Map<String, Long> reasonDistribution =
+                appointments.stream()
+                        .collect(Collectors.groupingBy(
+                                a -> a.getReason().name(),
+                                Collectors.counting()
+                        ));
+
+        List<AppointmentResDto> todayList =
+                appointments.stream()
+                        .filter(a ->
+                                a.getAppointmentDate().equals(today))
+                        .sorted(Comparator.comparing(
+                                Appointment::getAppointmentTime))
+                        .map(appointmentEntityToDto::mapAppointmentEntityToDto)
+                        .toList();
+
+        List<AppointmentResDto> upcoming =
+                appointments.stream()
+                        .filter(a ->
+                                a.getAppointmentDate().isAfter(today))
+                        .sorted(Comparator.comparing(
+                                Appointment::getAppointmentDate))
+                        .limit(5)
+                        .map(appointmentEntityToDto::mapAppointmentEntityToDto)
+                        .toList();
+
+        return new DoctorDashboardDto(
+
+                doctorDto,
+
+                totalPatients,
+                totalAppointments,
+                todayAppointments,
+                completedAppointments,
+
+                reasonDistribution,
+
+                todayList,
+
+                upcoming
+        );
     }
 }

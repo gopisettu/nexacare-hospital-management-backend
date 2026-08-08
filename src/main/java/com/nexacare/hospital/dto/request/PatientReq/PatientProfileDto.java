@@ -22,6 +22,7 @@ public record PatientProfileDto(
         String aadharNumber,
         BloodGroup bloodGroup,
         @NotBlank(message = "Phone is mandatory")
+        @Pattern(regexp = "\\d{10}", message = "Phone Number must be 10 digits")
         String phone,
         @NotBlank(message = "Email is mandatory")
         @Email(message = "Email must be valid")

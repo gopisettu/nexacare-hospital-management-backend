@@ -48,6 +48,9 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Long> 
 
     Appointment findTopByPatientIdOrderByCreatedAtDesc(Long patientId);
     List<Appointment> findByAppointmentDate(LocalDate appointmentDate);
+
+    List<Appointment> findByDoctorId(Long id);
+
     interface MedicineBatchRepository extends JpaRepository<MedicineBatch,Long> {
 
     }

@@ -3,7 +3,7 @@ package com.nexacare.hospital.service;
 import com.nexacare.hospital.dto.response.PatientRegisterByAdminDto;
 import com.nexacare.hospital.dto.request.AuthReq.LoginDto;
 import com.nexacare.hospital.dto.request.PatientReq.PatientProfileDto;
-import com.nexacare.hospital.dto.request.UploadDto;
+import com.nexacare.hospital.dto.request.ImageUploadReq.UploadDto;
 import com.nexacare.hospital.dto.response.AdminRes.PatientAdminResDto;
 import com.nexacare.hospital.dto.response.PatientRes.PatientResDto;
 import com.nexacare.hospital.dto.response.AuthRes.TokenDto;

@@ -1,4 +1,4 @@
-package com.nexacare.hospital.dto.request;
+package com.nexacare.hospital.dto.request.MedicineReq;
 import com.nexacare.hospital.enums.MedicineForm;
 import jakarta.validation.constraints.*;
 

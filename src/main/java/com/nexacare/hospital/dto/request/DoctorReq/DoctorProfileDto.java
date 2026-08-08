@@ -44,6 +44,8 @@ public record DoctorProfileDto(
         @Max(value = 60, message = "Experience cannot exceed 60 years")
         Integer totalExperienceYear,
 
+        @NotNull(message = "Consultation fee is mandatory")
+        @Positive(message = "Consultation fee must be greater than zero")
         Double consultationFee
 
 ) {
