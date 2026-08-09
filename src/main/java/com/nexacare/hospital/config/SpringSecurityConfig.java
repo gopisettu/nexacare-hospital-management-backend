@@ -66,9 +66,11 @@ public class SpringSecurityConfig {
                         .requestMatchers(HttpMethod.PATCH, "/api/doctor/rescheduleAppointment-ByDoctor/**").permitAll()
                         .requestMatchers(HttpMethod.PATCH, "/api/doctor/updateAppointmentStatus-ByDoctor/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/doctor/submitPrescription-byDoctor/**").permitAll()
+//                        .requestMatchers(HttpMethod.POST,"/api/doctor/submitPrescription-byDoctor/**").permitAll()
 
-
+                        .requestMatchers(HttpMethod.POST,"/api/doctor/submitPrescription-byDoctor/**").permitAll()
                         .requestMatchers(HttpMethod.GET,"/api/doctor/dashboard/{username}").permitAll()
+                        .requestMatchers(HttpMethod.GET,"/api/doctor/getListMedicine").permitAll()
 
                         .requestMatchers(HttpMethod.POST,"/api/admin/register-staffByAdmin").hasAuthority(Role.ADMIN.toString())
                         .requestMatchers(HttpMethod.POST,"/api/admin/register-doctorByAdmin").hasAuthority(Role.ADMIN.toString())

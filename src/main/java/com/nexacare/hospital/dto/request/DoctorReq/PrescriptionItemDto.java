@@ -10,19 +10,24 @@ public record PrescriptionItemDto(
 
         @NotNull(message = "Medicine is mandatory")
         Long medicineId,
+
         @NotNull(message = "Quantity is mandatory")
         @Min(value = 1, message = "Quantity must be at least 1")
         Integer quantity,
+
         @NotBlank(message = "Dosage is mandatory")
         String dosage,
+
         @NotNull(message = "Frequency is mandatory")
         Frequency frequency,
 
         @NotNull(message = "Duration is mandatory")
+        @Min(value = 1, message = "Duration must be at least 1 day")
         Integer durationDays,
 
         Route route,
 
         String instruction
 
-) {}
+) {
+}

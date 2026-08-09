@@ -15,6 +15,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @AllArgsConstructor
 public class MedicineService {
@@ -57,5 +59,10 @@ public class MedicineService {
                 medicineBatchRepository.findAll(spec, pageable);
 
         return medicinePage.map(medicineMapper::mapMedicineAdminRes);
+    }
+
+    public List<Medicine> getMedicineList() {
+
+        return medicineRepository.findAll();
     }
 }

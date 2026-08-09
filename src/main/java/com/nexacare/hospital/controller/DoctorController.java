@@ -11,8 +11,10 @@ import com.nexacare.hospital.dto.response.DoctorRes.DoctorResDto;
 import com.nexacare.hospital.dto.response.AuthRes.TokenDto;
 import com.nexacare.hospital.enums.AppointmentPeriod;
 import com.nexacare.hospital.enums.AppointmentStatus;
+import com.nexacare.hospital.model.Medicine;
 import com.nexacare.hospital.service.AppointmentService;
 import com.nexacare.hospital.service.DoctorService;
+import com.nexacare.hospital.service.MedicineService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -28,6 +30,7 @@ import java.util.List;
 public class DoctorController {
     private final DoctorService doctorService;
     private  final AppointmentService appointmentService;
+    private final MedicineService medicineService;
 
     @PostMapping("/loginDoctor")
     public TokenDto loginDoctor( @Valid @RequestBody LoginDto loginDto ){
@@ -93,6 +96,11 @@ public class DoctorController {
             @PathVariable String username){
 
         return doctorService.getDoctorDashboard(username);
+    }
+
+    @GetMapping("/getListMedicine")
+    public List<Medicine> getMedicineList() {
+        return medicineService.getMedicineList();
     }
 }
 
