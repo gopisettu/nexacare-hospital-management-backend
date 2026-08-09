@@ -9,12 +9,16 @@ import com.nexacare.hospital.dto.response.DoctorRes.AppointmentResDto;
 import com.nexacare.hospital.dto.response.DoctorRes.DoctorDashboardDto;
 import com.nexacare.hospital.dto.response.DoctorRes.DoctorResDto;
 import com.nexacare.hospital.dto.response.AuthRes.TokenDto;
+import com.nexacare.hospital.enums.AppointmentPeriod;
+import com.nexacare.hospital.enums.AppointmentStatus;
 import com.nexacare.hospital.service.AppointmentService;
 import com.nexacare.hospital.service.DoctorService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -44,15 +48,31 @@ public class DoctorController {
     public DoctorResDto getDoctorByUsername( @PathVariable String username){
         return doctorService.getDoctorByUsername(username);
     }
-
     @GetMapping("/allAppointment-ByDoctor/{username}")
-    public List<AppointmentResDto> showAllAppointmentByDoctor(@PathVariable String username,
-                                                              @RequestParam(required = false,defaultValue = "0") Integer page,
-                                                              @RequestParam(required = false,defaultValue = "20") Integer size){
-        return appointmentService.showAllAppointmentByDoctor(username,page,size);
+    public Page<AppointmentResDto> showAllAppointmentByDoctor(
 
+            @PathVariable String username,
+
+            @RequestParam(required = false, defaultValue = "TODAY")
+            AppointmentPeriod period,
+
+            @RequestParam(required = false)
+            AppointmentStatus status,
+
+            @RequestParam(required = false, defaultValue = "0")
+            Integer page,
+
+            @RequestParam(required = false, defaultValue = "10")
+            Integer size) {
+
+        return appointmentService.showAllAppointmentByDoctor(
+                username,
+                period,
+                status,
+                page,
+                size
+        );
     }
-
     @PatchMapping("/updateAppointmentStatus-ByDoctor/{username}")
     public void updateAppointmentStatus(@PathVariable String username, @Valid @RequestBody UpdateAppointmentStatusDto updateAppointmentStatusDto){
         appointmentService.updateAppointmentStatus(username,updateAppointmentStatusDto);

@@ -62,10 +62,12 @@ public class SpringSecurityConfig {
                         .requestMatchers(HttpMethod.GET,"/api/doctor/get-DoctorByUsername/**").permitAll()
                         .requestMatchers(HttpMethod.PUT,"/api/doctor/update-doctorProfile/**").permitAll()
 
-                        .requestMatchers(HttpMethod.GET, "/api/doctor/allAppointment-ByDoctor/**").hasAuthority(Role.DOCTOR.toString())
-                        .requestMatchers(HttpMethod.PATCH, "/api/doctor/rescheduleAppointment-ByDoctor/**").hasAuthority(Role.DOCTOR.toString())
-                        .requestMatchers(HttpMethod.PATCH, "/api/doctor/updateAppointmentStatus-ByDoctor/**").hasAuthority(Role.DOCTOR.toString())
-                        .requestMatchers(HttpMethod.POST, "/api/doctor/submitPrescription-byDoctor/**").hasAuthority(Role.DOCTOR.toString())
+                        .requestMatchers(HttpMethod.GET, "/api/doctor/allAppointment-ByDoctor/**").permitAll()
+                        .requestMatchers(HttpMethod.PATCH, "/api/doctor/rescheduleAppointment-ByDoctor/**").permitAll()
+                        .requestMatchers(HttpMethod.PATCH, "/api/doctor/updateAppointmentStatus-ByDoctor/**").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/doctor/submitPrescription-byDoctor/**").permitAll()
+
+
                         .requestMatchers(HttpMethod.GET,"/api/doctor/dashboard/{username}").permitAll()
 
                         .requestMatchers(HttpMethod.POST,"/api/admin/register-staffByAdmin").hasAuthority(Role.ADMIN.toString())
@@ -126,7 +128,7 @@ public class SpringSecurityConfig {
         configuration.setAllowedOrigins(List.of("http://localhost:5173"));
 
         configuration.setAllowedMethods(
-                List.of("GET","POST","PUT","DELETE","OPTIONS"));
+                List.of("GET","POST","PUT","DELETE","OPTIONS","PATCH"));
 
         configuration.setAllowedHeaders(List.of("*"));
 

@@ -35,6 +35,8 @@ public class EnumController {
 
 
 
+
+
     @GetMapping("/departments")
     public Department[] getDepartments() {
         return Department.values();

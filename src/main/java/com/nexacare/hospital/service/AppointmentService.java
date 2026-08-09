@@ -3,6 +3,7 @@ package com.nexacare.hospital.service;
 import com.nexacare.hospital.dto.request.DoctorReq.*;
 import com.nexacare.hospital.dto.request.PatientReq.PayBillDto;
 import com.nexacare.hospital.dto.response.DoctorRes.AppointmentResDto;
+import com.nexacare.hospital.enums.AppointmentPeriod;
 import com.nexacare.hospital.enums.AppointmentStatus;
 import com.nexacare.hospital.enums.PaymentStatus;
 import com.nexacare.hospital.exception.*;
@@ -14,10 +15,14 @@ import com.nexacare.hospital.repositories.*;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -82,15 +87,65 @@ private final InventoryService inventoryService;
     }
 
     // Doctor views appointments
-    public List<AppointmentResDto> showAllAppointmentByDoctor(String username,
-                                                              Integer page,
-                                                              Integer size) {
-        Pageable pageable = PageRequest.of(page, size);
-        List<Appointment> appointments =
-                appointmentRepository.findByDoctorUserUsername(username, pageable);
-        return appointments.stream()
-                .map((a) -> appointmentEntityToDto.mapAppointmentEntityToDto(a))
-                .toList();
+    public Page<AppointmentResDto> showAllAppointmentByDoctor(
+            String username,
+            AppointmentPeriod period,
+            AppointmentStatus status,
+            Integer page,
+            Integer size) {
+
+        Pageable pageable = PageRequest.of(
+                page,
+                size,
+                Sort.by(
+                        Sort.Direction.ASC,
+                        "appointmentDate"
+                )
+        );
+
+        LocalDate today = LocalDate.now();
+
+        Specification<Appointment> spec =
+                AppointmentSpecification.doctor(username);
+
+        if (status != null) {
+            spec = spec.and(
+                    AppointmentSpecification.status(status)
+            );
+        }
+
+        if (period == AppointmentPeriod.TODAY) {
+
+            spec = spec
+                    .and(AppointmentSpecification.fromDate(today))
+                    .and(AppointmentSpecification.toDate(today));
+
+        } else if (period == AppointmentPeriod.UPCOMING) {
+
+            spec = spec.and(
+                    AppointmentSpecification.fromDate(
+                            today.plusDays(1)
+                    )
+            );
+
+        } else if (period == AppointmentPeriod.PAST) {
+
+            spec = spec.and(
+                    AppointmentSpecification.toDate(
+                            today.minusDays(1)
+                    )
+            );
+        }
+
+        Page<Appointment> appointments =
+                appointmentRepository.findAll(
+                        spec,
+                        pageable
+                );
+
+        return appointments.map(
+                appointmentEntityToDto::mapAppointmentEntityToDto
+        );
     }
 
     public List<AppointmentResDto> showAllAppointmentByPatient(String username, Integer page, Integer size) {
