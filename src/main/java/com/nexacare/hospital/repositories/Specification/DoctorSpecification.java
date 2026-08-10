@@ -1,4 +1,4 @@
-package com.nexacare.hospital.service;
+package com.nexacare.hospital.repositories.Specification;
 
 import com.nexacare.hospital.model.Doctor;
 import com.nexacare.hospital.model.User;

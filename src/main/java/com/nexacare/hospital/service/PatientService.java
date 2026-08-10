@@ -19,6 +19,7 @@ import com.nexacare.hospital.model.User;
 import com.nexacare.hospital.repositories.AppointmentRepository;
 import com.nexacare.hospital.repositories.DoctorRepository;
 import com.nexacare.hospital.repositories.PatientRepository;
+import com.nexacare.hospital.repositories.Specification.PatientSpecification;
 import com.nexacare.hospital.repositories.UserRepository;
 import com.nexacare.hospital.utility.UploadUtility;
 import lombok.AllArgsConstructor;

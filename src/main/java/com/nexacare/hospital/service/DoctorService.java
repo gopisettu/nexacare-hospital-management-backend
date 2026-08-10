@@ -23,6 +23,7 @@ import com.nexacare.hospital.model.Doctor;
 import com.nexacare.hospital.model.User;
 import com.nexacare.hospital.repositories.AppointmentRepository;
 import com.nexacare.hospital.repositories.DoctorRepository;
+import com.nexacare.hospital.repositories.Specification.DoctorSpecification;
 import com.nexacare.hospital.repositories.UserRepository;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;

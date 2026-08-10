@@ -1,11 +1,3 @@
-#FROM ubuntu:latest
-#LABEL authors="S.Gopi"
-#
-#ENTRYPOINT ["top", "-b"]
-#
-#
-#
-#
 
 FROM eclipse-temurin:21-alpine
 

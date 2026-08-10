@@ -8,6 +8,7 @@ import com.nexacare.hospital.model.Medicine;
 import com.nexacare.hospital.model.MedicineBatch;
 import com.nexacare.hospital.repositories.MedicineBatchRepository;
 import com.nexacare.hospital.repositories.MedicineRepository;
+import com.nexacare.hospital.repositories.Specification.MedicineSpecification;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;

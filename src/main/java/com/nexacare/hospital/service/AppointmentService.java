@@ -13,6 +13,7 @@ import com.nexacare.hospital.mapper.dtotoentity.AppointmentMapper;
 import com.nexacare.hospital.mapper.entitytodto.AppointmentEntityToDto;
 import com.nexacare.hospital.model.*;
 import com.nexacare.hospital.repositories.*;
+import com.nexacare.hospital.repositories.Specification.AppointmentSpecification;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
