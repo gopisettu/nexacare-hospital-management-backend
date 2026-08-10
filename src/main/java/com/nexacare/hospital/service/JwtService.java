@@ -32,24 +32,22 @@ public class JwtService {
     }
 
 
-    public TokenDto generateToken(String username) {
+    public TokenDto generateToken(String username, String role) {
         log.info("Generating JWT token for user '{}'.", username);
 
         Map<String, Object> claims = new HashMap<>();
-        Date expiryDate = new Date(System.currentTimeMillis() + 1000L* 60 * 60*60);
-        String token=Jwts.builder()
+        claims.put("role", role); // optional: embed in the token too
+
+        Date expiryDate = new Date(System.currentTimeMillis() + 1000L * 60 * 60 * 60);
+        String token = Jwts.builder()
                 .claims(claims)
                 .subject(username)
                 .issuedAt(new Date())
                 .expiration(expiryDate)
                 .signWith(getKey())
                 .compact();
-        log.info("JWT token generated successfully for user '{}'.", username);
-        return new TokenDto(
-                token,
-                expiryDate
-        );
 
+        return new TokenDto(token, expiryDate, username, role);
     }
 
     public String extractUsername(String token) {

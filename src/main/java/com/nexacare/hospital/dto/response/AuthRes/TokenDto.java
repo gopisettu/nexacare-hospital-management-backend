@@ -5,9 +5,10 @@ import jakarta.validation.constraints.NotNull;
 import java.util.Date;
 
 
-public record TokenDto(
 
+public record TokenDto(
         String token,
-        Date expiryTime
-) {
-}
+        Date expiryTime,
+        String username,
+        String role
+) { }

@@ -55,8 +55,7 @@ public class DoctorService {
 
     public TokenDto loginDoctor(LoginDto loginDto) {
         log.info("Doctor '{}' logged in successfully.", loginDto.username());
-        return jwtService.generateToken(loginDto.username());
-
+        return jwtService.generateToken(loginDto.username(), Role.DOCTOR.toString());
     }
     public void registerDoctor(@Valid LoginDto loginDto) {
 

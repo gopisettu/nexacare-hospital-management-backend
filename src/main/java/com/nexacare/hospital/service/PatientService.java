@@ -57,9 +57,8 @@ private  final String uploadPathDoctor="D:/CapestoneProjectHexaware/FinalHospita
     private  final UploadUtility uploadUtility;
 private  final JwtService jwtService;
     public TokenDto loginPatient(LoginDto loginDto) {
-
         log.info("Patient '{}' logged in successfully.", loginDto.username());
-        return jwtService.generateToken(loginDto.username());
+        return jwtService.generateToken(loginDto.username(), Role.PATIENT.toString());
     }
 
     public void registerPatient(LoginDto loginDto) {

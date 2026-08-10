@@ -47,9 +47,8 @@ public class AdminService {
 
 
     public TokenDto loginAdmin(LoginDto loginDto) {
-        return jwtService.generateToken(loginDto.username());
+        return jwtService.generateToken(loginDto.username(), Role.ADMIN.toString());
     }
-
 
 
     public DashboardAllResDto getAdminAllDashData() {
