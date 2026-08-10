@@ -1,15 +1,15 @@
 package com.nexacare.hospital.controller;
 
-import com.nexacare.hospital.dto.request.DoctorReq.BookAppointmentDto;
-import com.nexacare.hospital.dto.request.AuthReq.LoginDto;
-import com.nexacare.hospital.dto.request.PatientReq.PatientProfileDto;
-import com.nexacare.hospital.dto.request.PatientReq.PayBillDto;
-import com.nexacare.hospital.dto.response.AdminRes.PatientAdminResDto;
-import com.nexacare.hospital.dto.response.AuthRes.TokenDto;
-import com.nexacare.hospital.dto.response.DoctorRes.AppointmentResDto;
-import com.nexacare.hospital.dto.response.DoctorRes.DoctorResDto;
-import com.nexacare.hospital.dto.response.DoctorRes.PrescriptionResDto;
-import com.nexacare.hospital.dto.response.PatientRes.PatientResDto;
+import com.nexacare.hospital.dto.request.doctorreq.BookAppointmentDto;
+import com.nexacare.hospital.dto.request.authreq.LoginDto;
+import com.nexacare.hospital.dto.request.patientreq.PatientProfileDto;
+import com.nexacare.hospital.dto.request.patientreq.PayBillDto;
+import com.nexacare.hospital.dto.response.adminres.PatientAdminResDto;
+import com.nexacare.hospital.dto.response.authres.TokenDto;
+import com.nexacare.hospital.dto.response.doctorres.AppointmentResDto;
+import com.nexacare.hospital.dto.response.doctorres.DoctorResDto;
+import com.nexacare.hospital.dto.response.doctorres.PrescriptionResDto;
+import com.nexacare.hospital.dto.response.patientres.PatientResDto;
 import com.nexacare.hospital.enums.*;
 import com.nexacare.hospital.service.AppointmentService;
 import com.nexacare.hospital.service.DoctorService;

@@ -8,6 +8,9 @@ import java.time.LocalDate;
 
 public class AppointmentSpecification {
 
+    private AppointmentSpecification() {
+        // Utility class
+    }
     // =========================================================
     // DOCTOR SPECIFICATION - EXISTING
     // =========================================================

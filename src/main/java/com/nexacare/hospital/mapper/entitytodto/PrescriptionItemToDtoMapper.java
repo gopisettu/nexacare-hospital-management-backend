@@ -1,6 +1,6 @@
 package com.nexacare.hospital.mapper.entitytodto;
 
-import com.nexacare.hospital.dto.response.DoctorRes.PrescriptionResDto;
+import com.nexacare.hospital.dto.response.doctorres.PrescriptionResDto;
 import com.nexacare.hospital.model.PrescriptionItem;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;

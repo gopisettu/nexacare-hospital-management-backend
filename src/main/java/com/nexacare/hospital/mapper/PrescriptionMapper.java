@@ -1,6 +1,6 @@
 package com.nexacare.hospital.mapper;
 
-import com.nexacare.hospital.dto.request.DoctorReq.PrescriptionItemDto;
+import com.nexacare.hospital.dto.request.doctorreq.PrescriptionItemDto;
 import com.nexacare.hospital.model.PrescriptionItem;
 import org.springframework.stereotype.Component;
 @Component

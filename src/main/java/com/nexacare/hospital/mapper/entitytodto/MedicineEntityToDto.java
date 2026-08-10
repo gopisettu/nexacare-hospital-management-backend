@@ -1,7 +1,7 @@
 package com.nexacare.hospital.mapper.entitytodto;
 
-import com.nexacare.hospital.dto.response.AdminRes.MedicineAdminRes;
-import com.nexacare.hospital.dto.response.AdminRes.MedicineResDto;
+import com.nexacare.hospital.dto.response.adminres.MedicineAdminRes;
+import com.nexacare.hospital.dto.response.adminres.MedicineResDto;
 import com.nexacare.hospital.model.Medicine;
 import com.nexacare.hospital.model.MedicineBatch;
 import org.springframework.stereotype.Component;

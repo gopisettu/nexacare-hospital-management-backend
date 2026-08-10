@@ -1,13 +1,14 @@
 package com.nexacare.hospital.service;
 
-import com.nexacare.hospital.dto.request.DoctorReq.DoctorProfileDto;
-import com.nexacare.hospital.dto.request.AdminReq.DoctorRegisterByAdminDto;
-import com.nexacare.hospital.dto.request.AuthReq.LoginDto;
-import com.nexacare.hospital.dto.response.AdminRes.DoctorAdminResDto;
-import com.nexacare.hospital.dto.response.DoctorRes.AppointmentResDto;
-import com.nexacare.hospital.dto.response.DoctorRes.DoctorDashboardDto;
-import com.nexacare.hospital.dto.response.DoctorRes.DoctorResDto;
-import com.nexacare.hospital.dto.response.AuthRes.TokenDto;
+import com.nexacare.hospital.dto.request.doctorreq.DoctorFilterRequest;
+import com.nexacare.hospital.dto.request.doctorreq.DoctorProfileDto;
+import com.nexacare.hospital.dto.request.adminreq.DoctorRegisterByAdminDto;
+import com.nexacare.hospital.dto.request.authreq.LoginDto;
+import com.nexacare.hospital.dto.response.adminres.DoctorAdminResDto;
+import com.nexacare.hospital.dto.response.doctorres.AppointmentResDto;
+import com.nexacare.hospital.dto.response.doctorres.DoctorDashboardDto;
+import com.nexacare.hospital.dto.response.doctorres.DoctorResDto;
+import com.nexacare.hospital.dto.response.authres.TokenDto;
 import com.nexacare.hospital.enums.AppointmentStatus;
 import com.nexacare.hospital.enums.Department;
 import com.nexacare.hospital.enums.Role;
@@ -52,6 +53,9 @@ public class DoctorService {
     private  final PasswordEncoder passwordEncoder;
     private  final  DoctorMapper doctorMapper;
     private final AppointmentRepository appointmentRepository;
+    private static final String DOCTOR_NOT_FOUND = "Doctor not found";
+    private static final String DOCTOR_USER_NOT_FOUND="Doctor username not found";
+
 
     public TokenDto loginDoctor(LoginDto loginDto) {
         log.info("Doctor '{}' logged in successfully.", loginDto.username());
@@ -80,10 +84,10 @@ public class DoctorService {
     public void updateProfile(@Valid DoctorProfileDto doctorProfileDto,String username) {
         User user= userRepository.findByUserUsername(username)
                 .orElseThrow(() ->
-                        new ResourceNotFoundException("Doctor not found"));
+                        new ResourceNotFoundException(DOCTOR_NOT_FOUND));
         Doctor doctor = doctorRepository.findByUserId(user.getId())
                 .orElseThrow(() ->
-                        new ResourceNotFoundException("Doctor not found"));
+                        new ResourceNotFoundException(DOCTOR_NOT_FOUND));
 doctor= DoctorMapper.mapDtotoDoctorEntity(doctorProfileDto,doctor);
 doctorRepository.save(doctor);
         log.info("Doctor '{}' updated profile successfully.", username);
@@ -104,60 +108,54 @@ doctorRepository.save(doctor);
     }
 
 
-
     public List<DoctorAdminResDto> getAllDoctorAdmin(
-
             int page,
             int size,
-
-            String search,
-            String gender,
-            String department,
-            String specialization,
-            String qualification,
-
-            String feeSort,
-            String experienceSort
-
+            DoctorFilterRequest filter
     ) {
 
         Specification<Doctor> spec =
                 DoctorSpecification.filterDoctors(
-                        search,
-                        gender,
-                        department,
-                        specialization,
-                        qualification
+                        filter.search(),
+                        filter.gender(),
+                        filter.department(),
+                        filter.specialization(),
+                        filter.qualification()
                 );
 
-        Sort sort = Sort.by(Sort.Direction.DESC, "createdAt");
+        Sort sort = Sort.by(
+                Sort.Direction.DESC,
+                "createdAt"
+        );
 
-
-        // Consultant Fee Sorting
-
-        if ("LOW".equals(feeSort)) {
-
-            sort = Sort.by(Sort.Direction.ASC, "consultationFee");
-
-        } else if ("HIGH".equals(feeSort)) {
-
-            sort = Sort.by(Sort.Direction.DESC, "consultationFee");
+        if ("LOW".equals(filter.feeSort())) {
+            sort = Sort.by(
+                    Sort.Direction.ASC,
+                    "consultationFee"
+            );
+        } else if ("HIGH".equals(filter.feeSort())) {
+            sort = Sort.by(
+                    Sort.Direction.DESC,
+                    "consultationFee"
+            );
         }
 
-        // Experience Sorting
-
-        if ("MIN".equals(experienceSort)) {
-
-            sort = Sort.by(Sort.Direction.ASC, "totalExperienceYear");
-
-        } else if ("MAX".equals(experienceSort)) {
-
-            sort = Sort.by(Sort.Direction.DESC, "totalExperienceYear");
+        if ("MIN".equals(filter.experienceSort())) {
+            sort = Sort.by(
+                    Sort.Direction.ASC,
+                    "totalExperienceYear"
+            );
+        } else if ("MAX".equals(filter.experienceSort())) {
+            sort = Sort.by(
+                    Sort.Direction.DESC,
+                    "totalExperienceYear"
+            );
         }
 
         Pageable pageable = PageRequest.of(page, size, sort);
 
-        Page<Doctor> doctorPage = doctorRepository.findAll(spec, pageable);
+        Page<Doctor> doctorPage =
+                doctorRepository.findAll(spec, pageable);
 
         List<Doctor> doctorList = doctorPage.getContent();
 
@@ -169,11 +167,9 @@ doctorRepository.save(doctor);
     }
 
 
-
-
     public DoctorResDto getDoctorByUsername(String username) {
         User user=userRepository.findByUserUsername(username)
-                .orElseThrow(()->new ResourceNotFoundException("Doctor Username Not found"));
+                .orElseThrow(()->new ResourceNotFoundException(DOCTOR_USER_NOT_FOUND));
         Doctor doctor=doctorRepository.findByUserId(user.getId())
                 .orElseThrow(()->new ResourceNotFoundException("Doctor userId not found"));
         log.info("Doctor profile retrieved successfully for '{}'.", username);
@@ -183,7 +179,7 @@ doctorRepository.save(doctor);
 
     public void deActivateDoctor(String username) {
         User user=userRepository.findByUserUsername(username)
-                .orElseThrow(()->new ResourceNotFoundException("Doctor UserName not found"));
+                .orElseThrow(()->new ResourceNotFoundException(DOCTOR_USER_NOT_FOUND));
         user.setActive(false);
         userRepository.save(user);
         log.info("Doctor '{}' deactivated successfully.", username);
@@ -192,7 +188,7 @@ doctorRepository.save(doctor);
 
     public List<DoctorResDto> searchDoctorBySpecialization(String username, Specialization specialization) {
       userRepository.findByUsername(username)
-                 .orElseThrow(()->new ResourceNotFoundException("Doctor username not found"));
+                 .orElseThrow(()->new ResourceNotFoundException(DOCTOR_USER_NOT_FOUND));
         List<Doctor> doctorList=doctorRepository.searchDoctorBySpecialization(specialization);
         if (doctorList.isEmpty()) {
             log.warn("No doctors found for specialization '{}'.", specialization);
@@ -211,7 +207,7 @@ doctorRepository.save(doctor);
     public List<DoctorResDto> searchDoctorByDepartment(String username, Department department)
     {
     userRepository.findByUsername(username)
-                .orElseThrow(()->new ResourceNotFoundException("Doctor username not found"));
+                .orElseThrow(()->new ResourceNotFoundException(DOCTOR_USER_NOT_FOUND));
 
         List<Doctor> doctorList=doctorRepository.searchDoctorByDepartment(department);
         if (doctorList.isEmpty()) {
@@ -275,7 +271,7 @@ doctorRepository.save(doctor);
     ) {
 
         Doctor doctor = doctorRepository.findByUserUsername(username)
-                .orElseThrow(() -> new RuntimeException("Doctor not found"));
+                .orElseThrow(() -> new RuntimeException(DOCTOR_NOT_FOUND));
 
         doctor.setFirstName(dto.firstName());
         doctor.setLastName(dto.lastName());
@@ -299,11 +295,11 @@ doctorRepository.save(doctor);
 
         User user = userRepository.findByUserUsername(username)
                 .orElseThrow(() ->
-                        new ResourceNotFoundException("Doctor username not found"));
+                        new ResourceNotFoundException(DOCTOR_USER_NOT_FOUND));
 
         Doctor doctor = doctorRepository.findByUserId(user.getId())
                 .orElseThrow(() ->
-                        new ResourceNotFoundException("Doctor not found"));
+                        new ResourceNotFoundException(DOCTOR_NOT_FOUND));
 
         DoctorResDto doctorDto =
                 doctorDtoMapper.mapDoctorEntityToDto(doctor);

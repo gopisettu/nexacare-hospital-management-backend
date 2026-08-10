@@ -1,7 +1,7 @@
 package com.nexacare.hospital.mapper.dtotoentity;
 
-import com.nexacare.hospital.dto.request.MedicineReq.AddMedicineDto;
-import com.nexacare.hospital.dto.response.AdminRes.MedicineAdminRes;
+import com.nexacare.hospital.dto.request.medicinereq.AddMedicineDto;
+import com.nexacare.hospital.dto.response.adminres.MedicineAdminRes;
 import com.nexacare.hospital.enums.MedicineCategory;
 import com.nexacare.hospital.model.Medicine;
 import com.nexacare.hospital.model.MedicineBatch;

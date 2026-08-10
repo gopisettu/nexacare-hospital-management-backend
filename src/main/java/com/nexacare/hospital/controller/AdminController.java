@@ -1,15 +1,16 @@
 package com.nexacare.hospital.controller;
 
-import com.nexacare.hospital.dto.request.DoctorReq.DoctorProfileDto;
-import com.nexacare.hospital.dto.request.AdminReq.DoctorRegisterByAdminDto;
-import com.nexacare.hospital.dto.request.AuthReq.LoginDto;
-import com.nexacare.hospital.dto.request.ImageUploadReq.UploadDto;
-import com.nexacare.hospital.dto.request.PatientReq.PatientProfileDto;
-import com.nexacare.hospital.dto.response.AdminRes.DashboardAllResDto;
-import com.nexacare.hospital.dto.response.AdminRes.DoctorAdminResDto;
-import com.nexacare.hospital.dto.response.AdminRes.MedicineAdminRes;
+import com.nexacare.hospital.dto.request.doctorreq.DoctorFilterRequest;
+import com.nexacare.hospital.dto.request.doctorreq.DoctorProfileDto;
+import com.nexacare.hospital.dto.request.adminreq.DoctorRegisterByAdminDto;
+import com.nexacare.hospital.dto.request.authreq.LoginDto;
+import com.nexacare.hospital.dto.request.imageuploadreq.UploadDto;
+import com.nexacare.hospital.dto.request.patientreq.PatientProfileDto;
+import com.nexacare.hospital.dto.response.adminres.DashboardAllResDto;
+import com.nexacare.hospital.dto.response.adminres.DoctorAdminResDto;
+import com.nexacare.hospital.dto.response.adminres.MedicineAdminRes;
 import com.nexacare.hospital.dto.response.PatientRegisterByAdminDto;
-import com.nexacare.hospital.dto.response.AuthRes.TokenDto;
+import com.nexacare.hospital.dto.response.authres.TokenDto;
 import com.nexacare.hospital.enums.BatchStatus;
 import com.nexacare.hospital.service.*;
 import jakarta.validation.Valid;
@@ -91,22 +92,35 @@ public UploadDto uploadImageDoctor(@PathVariable long doctorId,
     @GetMapping("/get-allDoctor")
     public List<DoctorAdminResDto> getAllDoctor(
 
-            @RequestParam(required = false, defaultValue = "0") Integer page,
-            @RequestParam(required = false, defaultValue = "8") Integer size,
+            @RequestParam(required = false, defaultValue = "0")
+            Integer page,
 
-            @RequestParam(required = false) String search,
-            @RequestParam(required = false) String gender,
-            @RequestParam(required = false) String department,
-            @RequestParam(required = false) String specialization,
-            @RequestParam(required = false) String qualification,
+            @RequestParam(required = false, defaultValue = "8")
+            Integer size,
 
-            @RequestParam(required = false) String feeSort,
-            @RequestParam(required = false) String experienceSort
+            @RequestParam(required = false)
+            String search,
+
+            @RequestParam(required = false)
+            String gender,
+
+            @RequestParam(required = false)
+            String department,
+
+            @RequestParam(required = false)
+            String specialization,
+
+            @RequestParam(required = false)
+            String qualification,
+
+            @RequestParam(required = false)
+            String feeSort,
+
+            @RequestParam(required = false)
+            String experienceSort
     ) {
 
-        return doctorService.getAllDoctorAdmin(
-                page,
-                size,
+        DoctorFilterRequest filter = new DoctorFilterRequest(
                 search,
                 gender,
                 department,
@@ -114,6 +128,12 @@ public UploadDto uploadImageDoctor(@PathVariable long doctorId,
                 qualification,
                 feeSort,
                 experienceSort
+        );
+
+        return doctorService.getAllDoctorAdmin(
+                page,
+                size,
+                filter
         );
     }
 

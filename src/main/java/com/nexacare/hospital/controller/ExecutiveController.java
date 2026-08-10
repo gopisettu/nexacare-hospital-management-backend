@@ -1,6 +1,6 @@
 package com.nexacare.hospital.controller;
 
-import com.nexacare.hospital.dto.request.AuthReq.LoginDto;
+import com.nexacare.hospital.dto.request.authreq.LoginDto;
 import com.nexacare.hospital.service.AdminService;
 import com.nexacare.hospital.service.DoctorService;
 import com.nexacare.hospital.service.PatientService;

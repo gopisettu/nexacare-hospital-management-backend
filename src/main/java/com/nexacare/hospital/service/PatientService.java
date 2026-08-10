@@ -1,12 +1,12 @@
 package com.nexacare.hospital.service;
 
 import com.nexacare.hospital.dto.response.PatientRegisterByAdminDto;
-import com.nexacare.hospital.dto.request.AuthReq.LoginDto;
-import com.nexacare.hospital.dto.request.PatientReq.PatientProfileDto;
-import com.nexacare.hospital.dto.request.ImageUploadReq.UploadDto;
-import com.nexacare.hospital.dto.response.AdminRes.PatientAdminResDto;
-import com.nexacare.hospital.dto.response.PatientRes.PatientResDto;
-import com.nexacare.hospital.dto.response.AuthRes.TokenDto;
+import com.nexacare.hospital.dto.request.authreq.LoginDto;
+import com.nexacare.hospital.dto.request.patientreq.PatientProfileDto;
+import com.nexacare.hospital.dto.request.imageuploadreq.UploadDto;
+import com.nexacare.hospital.dto.response.adminres.PatientAdminResDto;
+import com.nexacare.hospital.dto.response.patientres.PatientResDto;
+import com.nexacare.hospital.dto.response.authres.TokenDto;
 import com.nexacare.hospital.enums.*;
 import com.nexacare.hospital.exception.IllegalOperationException;
 import com.nexacare.hospital.exception.ResourceNotFoundException;
@@ -52,8 +52,8 @@ public class PatientService {
     private  final AppointmentRepository appointmentRepository;
     private  final DoctorRepository doctorRepository;
 
-    private final String uploadPath="D:/CapestoneProjectHexaware/FinalHospitalManagement/frontend-hospitalmanagement/public/ProductImages";
-private  final String uploadPathDoctor="D:/CapestoneProjectHexaware/FinalHospitalManagement/frontend-hospitalmanagement/public/DoctorImages";
+    private final static String uploadPath="D:/CapestoneProjectHexaware/FinalHospitalManagement/frontend-hospitalmanagement/public/ProductImages";
+private  final  static String uploadPathDoctor="D:/CapestoneProjectHexaware/FinalHospitalManagement/frontend-hospitalmanagement/public/DoctorImages";
     private  final UploadUtility uploadUtility;
 private  final JwtService jwtService;
     public TokenDto loginPatient(LoginDto loginDto) {
@@ -134,14 +134,14 @@ private  final JwtService jwtService;
 
         log.info("Retrieved {} patient(s).", patientList.size());
 
-        List<PatientAdminResDto> patientResDtos = patientList.stream()
+        return  patientList.stream()
                 .map(patient -> {
                     Appointment appointment = appointmentRepository.findTopByPatientIdOrderByCreatedAtDesc(patient.getId());
                     return patientEntityMapper.mapPatientAdminRes(patient, appointment);
                 })
                 .toList();
 
-        return patientResDtos;
+
     }
 
     public PatientResDto getPatientByUsername(String username) {

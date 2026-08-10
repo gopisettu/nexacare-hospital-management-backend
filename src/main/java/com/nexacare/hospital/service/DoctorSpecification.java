@@ -10,7 +10,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DoctorSpecification {
+private  DoctorSpecification(){
 
+}
     public static Specification<Doctor> filterDoctors(
 
             String search,

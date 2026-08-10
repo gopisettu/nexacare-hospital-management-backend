@@ -1,6 +1,6 @@
 package com.nexacare.hospital.service;
 
-import com.nexacare.hospital.dto.response.AdminRes.MedicineAdminRes;
+import com.nexacare.hospital.dto.response.adminres.MedicineAdminRes;
 import com.nexacare.hospital.enums.BatchStatus;
 import com.nexacare.hospital.exception.ResourceNotFoundException;
 import com.nexacare.hospital.mapper.dtotoentity.MedicineMapper;

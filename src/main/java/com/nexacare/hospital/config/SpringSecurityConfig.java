@@ -52,7 +52,7 @@ public class SpringSecurityConfig {
                         .requestMatchers(HttpMethod.POST,"/api/patient/book-doctorByPatient/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/patient/getAppointment-ByPatient/**").permitAll()
 
-                        .requestMatchers(HttpMethod.GET,"/api/patient/view-PrescriptionByPatient/**").hasAuthority(Role.PATIENT.toString())
+                        .requestMatchers(HttpMethod.GET,"/api/patient/view-PrescriptionByPatient/**").permitAll()
                         .requestMatchers(HttpMethod.PATCH, "/api/patient/payBill-ByPatient/**").hasAuthority(Role.PATIENT.toString())
                         .requestMatchers(HttpMethod.GET,"/api/patient/getPatientAppointments/{username}").permitAll()
 
@@ -67,7 +67,7 @@ public class SpringSecurityConfig {
                         .requestMatchers(HttpMethod.PATCH, "/api/doctor/rescheduleAppointment-ByDoctor/**").permitAll()
                         .requestMatchers(HttpMethod.PATCH, "/api/doctor/updateAppointmentStatus-ByDoctor/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/doctor/submitPrescription-byDoctor/**").permitAll()
-//                        .requestMatchers(HttpMethod.POST,"/api/doctor/submitPrescription-byDoctor/**").permitAll()
+
 
                         .requestMatchers(HttpMethod.POST,"/api/doctor/submitPrescription-byDoctor/**").permitAll()
                         .requestMatchers(HttpMethod.GET,"/api/doctor/dashboard/{username}").permitAll()

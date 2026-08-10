@@ -1,6 +1,6 @@
 package com.nexacare.hospital.mapper.dtotoentity;
 
-import com.nexacare.hospital.dto.request.MedicineReq.AddMedicineBatchDto;
+import com.nexacare.hospital.dto.request.medicinereq.AddMedicineBatchDto;
 import com.nexacare.hospital.model.MedicineBatch;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;

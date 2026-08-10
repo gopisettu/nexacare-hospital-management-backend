@@ -1,14 +1,14 @@
 package com.nexacare.hospital.controller;
 
-import com.nexacare.hospital.dto.request.AuthReq.LoginDto;
-import com.nexacare.hospital.dto.request.DoctorReq.DoctorProfileDto;
-import com.nexacare.hospital.dto.request.DoctorReq.RescheduleAppointmentDto;
-import com.nexacare.hospital.dto.request.DoctorReq.SubmitPrescriptionDto;
-import com.nexacare.hospital.dto.request.DoctorReq.UpdateAppointmentStatusDto;
-import com.nexacare.hospital.dto.response.DoctorRes.AppointmentResDto;
-import com.nexacare.hospital.dto.response.DoctorRes.DoctorDashboardDto;
-import com.nexacare.hospital.dto.response.DoctorRes.DoctorResDto;
-import com.nexacare.hospital.dto.response.AuthRes.TokenDto;
+import com.nexacare.hospital.dto.request.authreq.LoginDto;
+import com.nexacare.hospital.dto.request.doctorreq.DoctorProfileDto;
+import com.nexacare.hospital.dto.request.doctorreq.RescheduleAppointmentDto;
+import com.nexacare.hospital.dto.request.doctorreq.SubmitPrescriptionDto;
+import com.nexacare.hospital.dto.request.doctorreq.UpdateAppointmentStatusDto;
+import com.nexacare.hospital.dto.response.doctorres.AppointmentResDto;
+import com.nexacare.hospital.dto.response.doctorres.DoctorDashboardDto;
+import com.nexacare.hospital.dto.response.doctorres.DoctorResDto;
+import com.nexacare.hospital.dto.response.authres.TokenDto;
 import com.nexacare.hospital.enums.AppointmentPeriod;
 import com.nexacare.hospital.enums.AppointmentStatus;
 import com.nexacare.hospital.model.Medicine;
@@ -20,7 +20,6 @@ import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDate;
 import java.util.List;
 
 @RestController

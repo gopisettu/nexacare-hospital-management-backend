@@ -13,7 +13,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class PatientSpecification {
+    private final static String APPOINTMENT_STATUS="appointmentStatus";
 
+    private PatientSpecification(){
+
+    }
     public static Specification<Patient> filterPatients(String search, String gender, String bloodGroup,
                                                         String appointmentFilter) {
 
@@ -95,9 +99,9 @@ public class PatientSpecification {
 
             appointmentConditions.add(cb.greaterThan(appointmentToCheck.get("appointmentDate"), today));
 
-            Predicate notCompleted = cb.notEqual(appointmentToCheck.get("appointmentStatus"), AppointmentStatus.COMPLETED);
-            Predicate notCancelled = cb.notEqual(appointmentToCheck.get("appointmentStatus"), AppointmentStatus.CANCELLED);
-            Predicate notNoShow = cb.notEqual(appointmentToCheck.get("appointmentStatus"), AppointmentStatus.NO_SHOW);
+            Predicate notCompleted = cb.notEqual(appointmentToCheck.get(APPOINTMENT_STATUS), AppointmentStatus.COMPLETED);
+            Predicate notCancelled = cb.notEqual(appointmentToCheck.get(APPOINTMENT_STATUS), AppointmentStatus.CANCELLED);
+            Predicate notNoShow = cb.notEqual(appointmentToCheck.get(APPOINTMENT_STATUS), AppointmentStatus.NO_SHOW);
 
             appointmentConditions.add(notCompleted);
             appointmentConditions.add(notCancelled);
@@ -107,7 +111,7 @@ public class PatientSpecification {
 
             // Direct status match, e.g. "COMPLETED", "SCHEDULED", "CANCELLED"
             AppointmentStatus statusToMatch = AppointmentStatus.valueOf(appointmentFilter);
-            appointmentConditions.add(cb.equal(appointmentToCheck.get("appointmentStatus"), statusToMatch));
+            appointmentConditions.add(cb.equal(appointmentToCheck.get(APPOINTMENT_STATUS), statusToMatch));
         }
 
         matchingAppointment.where(appointmentConditions.toArray(new Predicate[0]));

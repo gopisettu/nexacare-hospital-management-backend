@@ -1,7 +1,7 @@
 package com.nexacare.hospital.controller;
 
 
-import com.nexacare.hospital.dto.response.DoctorRes.AppointmentResDto;
+import com.nexacare.hospital.dto.response.doctorres.AppointmentResDto;
 
 import java.util.List;
 

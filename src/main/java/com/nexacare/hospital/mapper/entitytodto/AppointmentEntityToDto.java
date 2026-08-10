@@ -1,6 +1,6 @@
 package com.nexacare.hospital.mapper.entitytodto;
 
-import com.nexacare.hospital.dto.response.DoctorRes.AppointmentResDto;
+import com.nexacare.hospital.dto.response.doctorres.AppointmentResDto;
 import com.nexacare.hospital.model.Appointment;
 import org.springframework.stereotype.Component;
 

@@ -1,7 +1,7 @@
 package com.nexacare.hospital.mapper.dtotoentity;
 
-import com.nexacare.hospital.dto.request.DoctorReq.DoctorProfileDto;
-import com.nexacare.hospital.dto.response.AdminRes.DoctorAdminResDto;
+import com.nexacare.hospital.dto.request.doctorreq.DoctorProfileDto;
+import com.nexacare.hospital.dto.response.adminres.DoctorAdminResDto;
 import com.nexacare.hospital.model.Doctor;
 import org.springframework.stereotype.Component;
 

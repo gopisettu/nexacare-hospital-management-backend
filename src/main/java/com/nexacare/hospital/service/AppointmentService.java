@@ -1,9 +1,9 @@
 package com.nexacare.hospital.service;
 
 import com.nexacare.hospital.controller.PatientAppointmentResponseDto;
-import com.nexacare.hospital.dto.request.DoctorReq.*;
-import com.nexacare.hospital.dto.request.PatientReq.PayBillDto;
-import com.nexacare.hospital.dto.response.DoctorRes.AppointmentResDto;
+import com.nexacare.hospital.dto.request.doctorreq.*;
+import com.nexacare.hospital.dto.request.patientreq.PayBillDto;
+import com.nexacare.hospital.dto.response.doctorres.AppointmentResDto;
 import com.nexacare.hospital.enums.AppointmentPeriod;
 import com.nexacare.hospital.enums.AppointmentStatus;
 import com.nexacare.hospital.enums.PaymentStatus;
@@ -43,6 +43,9 @@ private final MedicineBatchRepository medicineBatchRepository;
 private  final BillingService billingService;
 private final InventoryService inventoryService;
     private static final String DOCTOR_NOT_FOUND = "Doctor not found";
+    private static final String APPOINTMENT_DATE =  "appointmentDate";
+    private static final String APPOINTMENT_TIME= "appointmentTime";
+   
     public void bookDoctor(String username, BookAppointmentDto dto) {
         log.info("Patient '{}' is attempting to book an appointment with doctor ID {} on {} at {}",
                 username,
@@ -100,7 +103,7 @@ private final InventoryService inventoryService;
                 size,
                 Sort.by(
                         Sort.Direction.ASC,
-                        "appointmentDate"
+                        APPOINTMENT_DATE
                 )
         );
 
@@ -341,7 +344,7 @@ private final InventoryService inventoryService;
                         100,
                         Sort.by(
                                 Sort.Direction.ASC,
-                                "appointmentTime"
+                                 APPOINTMENT_TIME
                         )
                 );
 
@@ -369,11 +372,11 @@ private final InventoryService inventoryService;
                         size,
                         Sort.by(
                                 Sort.Direction.ASC,
-                                "appointmentDate"
+                                 APPOINTMENT_DATE
                         ).and(
                                 Sort.by(
                                         Sort.Direction.ASC,
-                                        "appointmentTime"
+                                         APPOINTMENT_TIME
                                 )
                         )
                 );
@@ -402,11 +405,11 @@ private final InventoryService inventoryService;
                         size,
                         Sort.by(
                                 Sort.Direction.DESC,
-                                "appointmentDate"
+                                 APPOINTMENT_DATE
                         ).and(
                                 Sort.by(
                                         Sort.Direction.DESC,
-                                        "appointmentTime"
+                                         APPOINTMENT_TIME
                                 )
                         )
                 );
