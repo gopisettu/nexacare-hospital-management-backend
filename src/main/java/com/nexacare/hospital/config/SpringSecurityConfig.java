@@ -54,6 +54,7 @@ public class SpringSecurityConfig {
 
                         .requestMatchers(HttpMethod.GET,"/api/patient/view-PrescriptionByPatient/**").hasAuthority(Role.PATIENT.toString())
                         .requestMatchers(HttpMethod.PATCH, "/api/patient/payBill-ByPatient/**").hasAuthority(Role.PATIENT.toString())
+                        .requestMatchers(HttpMethod.GET,"/api/patient/getPatientAppointments/{username}").permitAll()
 
 
                         .requestMatchers(HttpMethod.POST, "/api/doctor/register-doctor").permitAll()
@@ -80,6 +81,7 @@ public class SpringSecurityConfig {
                         .requestMatchers(HttpMethod.PUT,"/api/admin/update-patientProfile/{username}").permitAll()
                         .requestMatchers(HttpMethod.PUT,"/api/admin/image/upload/{patientId}").permitAll()
                         .requestMatchers(HttpMethod.GET,"/api/admin/admin-dashboardAllRequiredData").permitAll()
+                        .requestMatchers(HttpMethod.POST,"/api/admin/register-doctorByAdmin").permitAll()
 
                         .requestMatchers(HttpMethod.GET,"/api/admin/get-allDoctor").permitAll()
                         .requestMatchers(HttpMethod.PUT,"/api/admin/doctorimage/upload/{doctorId}").permitAll()

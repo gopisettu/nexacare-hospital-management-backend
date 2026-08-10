@@ -78,6 +78,28 @@ public class PatientController {
         return appointmentService.showAllAppointmentByPatient(username,page,size);
 
     }
+
+    @GetMapping("/getPatientAppointments/{username}")
+    public PatientAppointmentResponseDto getPatientAppointments(
+            @PathVariable String username,
+
+            @RequestParam(required = false, defaultValue = "0")
+            Integer upcomingPage,
+
+            @RequestParam(required = false, defaultValue = "0")
+            Integer pastPage,
+
+            @RequestParam(required = false, defaultValue = "2")
+            Integer size
+    ) {
+
+        return appointmentService.getPatientAppointments(
+                username,
+                upcomingPage,
+                pastPage,
+                size
+        );
+    }
     @GetMapping("/searchDoctor-bySpecialization/{username}/{specialization}")
     public List<DoctorResDto> searchDoctorBySpecialization(@PathVariable String username, @PathVariable Specialization specialization){
         return doctorService.searchDoctorBySpecialization(username,specialization);

@@ -1,5 +1,6 @@
 package com.nexacare.hospital.service;
 
+import com.nexacare.hospital.controller.PatientAppointmentResponseDto;
 import com.nexacare.hospital.dto.request.DoctorReq.*;
 import com.nexacare.hospital.dto.request.PatientReq.PayBillDto;
 import com.nexacare.hospital.dto.response.DoctorRes.AppointmentResDto;
@@ -309,4 +310,138 @@ private final InventoryService inventoryService;
 
         prescriptionItemRepository.save(item);
     }
+
+
+
+    public PatientAppointmentResponseDto getPatientAppointments(
+            String username,
+            Integer upcomingPage,
+            Integer pastPage,
+            Integer size) {
+
+        if (upcomingPage == null || upcomingPage < 0) {
+            upcomingPage = 0;
+        }
+
+        if (pastPage == null || pastPage < 0) {
+            pastPage = 0;
+        }
+
+        if (size == null || size <= 0) {
+            size = 2;
+        }
+
+        // =====================================================
+        // TODAY
+        // =====================================================
+
+        Pageable todayPageable =
+                PageRequest.of(
+                        0,
+                        100,
+                        Sort.by(
+                                Sort.Direction.ASC,
+                                "appointmentTime"
+                        )
+                );
+
+        Page<Appointment> todayPage =
+                appointmentRepository.findAll(
+                        AppointmentSpecification.patient(username)
+                                .and(AppointmentSpecification.today()),
+                        todayPageable
+                );
+
+        List<AppointmentResDto> today =
+                todayPage.getContent()
+                        .stream()
+                        .map(appointmentEntityToDto::mapAppointmentEntityToDto)
+                        .toList();
+
+
+        // =====================================================
+        // UPCOMING
+        // =====================================================
+
+        Pageable upcomingPageable =
+                PageRequest.of(
+                        upcomingPage,
+                        size,
+                        Sort.by(
+                                Sort.Direction.ASC,
+                                "appointmentDate"
+                        ).and(
+                                Sort.by(
+                                        Sort.Direction.ASC,
+                                        "appointmentTime"
+                                )
+                        )
+                );
+
+        Page<Appointment> upcomingPageResult =
+                appointmentRepository.findAll(
+                        AppointmentSpecification.patient(username)
+                                .and(AppointmentSpecification.upcoming()),
+                        upcomingPageable
+                );
+
+        List<AppointmentResDto> upcoming =
+                upcomingPageResult.getContent()
+                        .stream()
+                        .map(appointmentEntityToDto::mapAppointmentEntityToDto)
+                        .toList();
+
+
+        // =====================================================
+        // PAST
+        // =====================================================
+
+        Pageable pastPageable =
+                PageRequest.of(
+                        pastPage,
+                        size,
+                        Sort.by(
+                                Sort.Direction.DESC,
+                                "appointmentDate"
+                        ).and(
+                                Sort.by(
+                                        Sort.Direction.DESC,
+                                        "appointmentTime"
+                                )
+                        )
+                );
+
+        Page<Appointment> pastPageResult =
+                appointmentRepository.findAll(
+                        AppointmentSpecification.patient(username)
+                                .and(AppointmentSpecification.past()),
+                        pastPageable
+                );
+
+        List<AppointmentResDto> past =
+                pastPageResult.getContent()
+                        .stream()
+                        .map(appointmentEntityToDto::mapAppointmentEntityToDto)
+                        .toList();
+
+
+        // =====================================================
+        // FINAL RESPONSE
+        // =====================================================
+
+        return new PatientAppointmentResponseDto(
+                today,
+
+                upcoming,
+                upcomingPageResult.getTotalElements(),
+                upcomingPageResult.getTotalPages(),
+                upcomingPage,
+
+                past,
+                pastPageResult.getTotalElements(),
+                pastPageResult.getTotalPages(),
+                pastPage
+        );
+    }
+
 }
