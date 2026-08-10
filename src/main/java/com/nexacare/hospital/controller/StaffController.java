@@ -11,11 +11,7 @@ import org.springframework.web.bind.annotation.*;
 @AllArgsConstructor
 public class StaffController {
     private final StaffService staffService;
-//    @PostMapping("/loginStaff")
-//    public TokenDto loginStaff(@RequestBody
-//                                 LoginDto loginDto){
-//        return staffService.loginStaff(loginDto);
-//    }
+
     @PostMapping("/addMedicineStock-ByStaff/{username}")
     public void  addMedicine(@PathVariable String username,@RequestBody AddMedicineDto addMedicineBatchDto ){
         staffService.addMedicine(username,addMedicineBatchDto);

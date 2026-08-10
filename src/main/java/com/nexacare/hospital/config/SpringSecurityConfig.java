@@ -95,7 +95,7 @@ public class SpringSecurityConfig {
 
 
                         .requestMatchers(HttpMethod.POST,"/api/executive/register-AdminByExecutive").permitAll()
-                                                     ///api/executive/deActivatePatient-ByExecutive/patient560@gmail.com
+
                         .requestMatchers(HttpMethod.PUT,"api/executive/deActivatePatient-ByExecutive/**").permitAll()
                         .requestMatchers(HttpMethod.PUT, "/api/executive/deActivateDoctor-ByExecutive/**").permitAll()
 

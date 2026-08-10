@@ -17,7 +17,7 @@ public class MedicineMapper {
         medicine.setName(dto.name());
         medicine.setDosage(dto.dosage());
         medicine.setManufacturer(dto.manufacturer());
-        medicine.setCategory(MedicineCategory.valueOf(dto.category().toString()));
+        medicine.setCategory(MedicineCategory.valueOf(dto.category()));
         medicine.setMedicineForm(dto.medicineForm());
         medicine.setUnitPrice(dto.unitPrice());
 

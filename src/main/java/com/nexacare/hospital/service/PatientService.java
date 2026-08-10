@@ -52,8 +52,10 @@ public class PatientService {
     private  final AppointmentRepository appointmentRepository;
     private  final DoctorRepository doctorRepository;
 
-    private final static String uploadPath="D:/CapestoneProjectHexaware/FinalHospitalManagement/frontend-hospitalmanagement/public/ProductImages";
-private  final  static String uploadPathDoctor="D:/CapestoneProjectHexaware/FinalHospitalManagement/frontend-hospitalmanagement/public/DoctorImages";
+
+
+    private final static String UPLOAD_PATH="D:/CapestoneProjectHexaware/FinalHospitalManagement/frontend-hospitalmanagement/public/ProductImages";
+private  final  static String  UPLOAD_PATH_DOCTOR="D:/CapestoneProjectHexaware/FinalHospitalManagement/frontend-hospitalmanagement/public/DoctorImages";
     private  final UploadUtility uploadUtility;
 private  final JwtService jwtService;
     public TokenDto loginPatient(LoginDto loginDto) {
@@ -214,7 +216,7 @@ patient.setAddress(patientRegisterByAdminDto.getAddress());
                 .orElseThrow(()->new ResourceNotFoundException("Product Id not found"));
 
         uploadUtility.validateImage(imageFile);
-        Path uPathDir =  Paths.get(uploadPath);
+        Path uPathDir =  Paths.get(UPLOAD_PATH);
         Path filePath =  uPathDir.resolve(Objects.requireNonNull(imageFile.getOriginalFilename()));
 
         Files.copy(imageFile.getInputStream(), filePath , StandardCopyOption.REPLACE_EXISTING);
@@ -238,7 +240,7 @@ patient.setAddress(patientRegisterByAdminDto.getAddress());
                 .orElseThrow(()->new ResourceNotFoundException("Doctor Id not found"));
 
         uploadUtility.validateImage(imageFile);
-        Path uPathDir =  Paths.get(uploadPathDoctor);
+        Path uPathDir =  Paths.get( UPLOAD_PATH_DOCTOR);
         Path filePath =  uPathDir.resolve(Objects.requireNonNull(imageFile.getOriginalFilename()));
 
         Files.copy(imageFile.getInputStream(), filePath , StandardCopyOption.REPLACE_EXISTING);

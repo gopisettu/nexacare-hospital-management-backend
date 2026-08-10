@@ -47,9 +47,6 @@ public class StaffService {
 
     }
 
-//    public TokenDto loginStaff(LoginDto loginDto) {
-//        return  jwtService.generateToken(loginDto.username());
-//    }
 
 
     public void addMedicine(String username, AddMedicineDto medicineDto) {

@@ -7,6 +7,7 @@ import org.springframework.data.jpa.domain.Specification;
 import java.time.LocalDate;
 
 public class AppointmentSpecification {
+    private final static String APPOINTMENT_DATE ="appointmentDate";
 
     private AppointmentSpecification() {
         // Utility class
@@ -69,7 +70,7 @@ public class AppointmentSpecification {
 
         return (root, query, cb) ->
                 cb.greaterThanOrEqualTo(
-                        root.get("appointmentDate"),
+                        root.get(APPOINTMENT_DATE),
                         date
                 );
     }
@@ -84,7 +85,7 @@ public class AppointmentSpecification {
 
         return (root, query, cb) ->
                 cb.lessThanOrEqualTo(
-                        root.get("appointmentDate"),
+                        root.get(APPOINTMENT_DATE),
                         date
                 );
     }
@@ -100,7 +101,7 @@ public class AppointmentSpecification {
 
         return (root, query, cb) ->
                 cb.equal(
-                        root.get("appointmentDate"),
+                        root.get(APPOINTMENT_DATE),
                         today
                 );
     }
@@ -117,7 +118,7 @@ public class AppointmentSpecification {
 
         return (root, query, cb) ->
                 cb.greaterThan(
-                        root.get("appointmentDate"),
+                        root.get(APPOINTMENT_DATE),
                         today
                 );
     }
@@ -134,7 +135,7 @@ public class AppointmentSpecification {
 
         return (root, query, cb) ->
                 cb.lessThan(
-                        root.get("appointmentDate"),
+                        root.get(APPOINTMENT_DATE),
                         today
                 );
     }
