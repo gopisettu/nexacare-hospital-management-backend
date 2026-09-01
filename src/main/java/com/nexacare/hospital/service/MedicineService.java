@@ -25,6 +25,9 @@ public class MedicineService {
     private final MedicineRepository medicineRepository;
     private final MedicineBatchRepository medicineBatchRepository;
     private final MedicineMapper medicineMapper;
+    private  final MedicineMapper mapMedicineAdminResV2;
+
+
 
     public Medicine validateMedicine(Long medicineId) {
 
@@ -34,7 +37,6 @@ public class MedicineService {
                                 "Medicine not found : " + medicineId));
     }
 
-
     public Page<MedicineAdminRes> getAllMedicines(
             Integer page,
             Integer size,
@@ -43,7 +45,7 @@ public class MedicineService {
             BatchStatus batchStatus,
             String sortOption) {
 
-        Specification<MedicineBatch> spec =
+        Specification<Medicine> spec =
                 MedicineSpecification.filterMedicines(
                         search,
                         category,
@@ -56,12 +58,13 @@ public class MedicineService {
                 MedicineSpecification.getSort(sortOption)
         );
 
-        Page<MedicineBatch> medicinePage =
-                medicineBatchRepository.findAll(spec, pageable);
+        Page<Medicine> medicinePage =
+                medicineRepository.findAll(spec, pageable);
 
-        return medicinePage.map(medicineMapper::mapMedicineAdminRes);
+        return medicinePage.map(
+                medicineMapper::mapMedicineAdminRes
+        );
     }
-
     public List<Medicine> getMedicineList() {
 
         return medicineRepository.findAll();

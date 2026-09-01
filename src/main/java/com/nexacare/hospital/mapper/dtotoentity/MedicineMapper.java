@@ -64,4 +64,40 @@ public class MedicineMapper {
 
         return res;
     }
+
+
+    public MedicineAdminRes mapMedicineAdminRes(Medicine medicine) {
+
+        MedicineAdminRes response = new MedicineAdminRes();
+
+        // Medicine details
+        response.setId(medicine.getId());
+        response.setName(medicine.getName());
+        response.setDosage(medicine.getDosage());
+        response.setManufacturer(medicine.getManufacturer());
+
+        response.setCategory(
+                medicine.getCategory() != null
+                        ? medicine.getCategory().name()
+                        : null
+        );
+
+        response.setMedicineForm(medicine.getMedicineForm());
+        response.setUnitPrice(medicine.getUnitPrice());
+
+        // Batch details
+        if (medicine.getBatches() != null
+                && !medicine.getBatches().isEmpty()) {
+
+            MedicineBatch batch = medicine.getBatches().get(0);
+
+            response.setBatchNo(batch.getBatchNo());
+            response.setQuantityReceived(batch.getQuantityReceived());
+            response.setQuantityRemaining(batch.getQuantityRemaining());
+            response.setExpiryDate(batch.getExpiryDate());
+            response.setBatchStatus(batch.getBatchStatus());
+        }
+
+        return response;
+    }
 }

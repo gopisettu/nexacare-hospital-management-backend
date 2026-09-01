@@ -85,33 +85,24 @@ private  final JwtService jwtService;
 
 
     }
-
     public void updateProfile(PatientProfileDto patientProfileDto, String username) {
+
         User user = userRepository.findByUserUsername(username)
-                .orElseThrow(() -> new ResourceNotFoundException("Patient username not found"));
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("Patient username not found"));
 
         Patient patient = patientRepository.findByUserId(user.getId())
-                .orElseThrow(() -> new ResourceNotFoundException("Patient not found"));
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("Patient not found"));
 
-        if (!patient.getPhone().equals(patientProfileDto.phone())
-                && patientRepository.existsByPhone(patientProfileDto.phone())) {
+//        // Aadhar duplicate validation
+//        if (!Objects.equals(patient.getAadharNumber(), patientProfileDto.aadharNumber())
+//                && patientRepository.existsByAadharNumber(patientProfileDto.aadharNumber())) {
+//
+//            throw new IllegalOperationException("Aadhar number already exists.");
+//        }
 
-            throw new IllegalOperationException("Phone number already exists.");
-        }
-
-        if (!patient.getEmail().equals(patientProfileDto.email())
-                && patientRepository.existsByEmail(patientProfileDto.email())) {
-
-            throw new IllegalOperationException("Email already exists.");
-        }
-
-        if (!patient.getAadharNumber().equals(patientProfileDto.aadharNumber())
-                && patientRepository.existsByAadharNumber(patientProfileDto.aadharNumber())) {
-
-            throw new IllegalOperationException("Aadhar number already exists.");
-        }
-
-               patient= PatientDtoMapper.mapDtoToPatient(patientProfileDto,patient);
+        patient = PatientDtoMapper.mapDtoToPatient(patientProfileDto, patient);
 
         patientRepository.save(patient);
 
@@ -121,7 +112,7 @@ private  final JwtService jwtService;
                                                   String bloodGroup, String appointmentFilter, String sortOption) {
 
         Specification<Patient> spec = PatientSpecification.filterPatients(search, gender, bloodGroup, appointmentFilter);
-
+//instead so sorting all the record let them filter by PatientFilter
         Sort sort = Sort.by(Sort.Direction.DESC, "createdAt");
 
         if ("YOUNG".equals(sortOption)) {

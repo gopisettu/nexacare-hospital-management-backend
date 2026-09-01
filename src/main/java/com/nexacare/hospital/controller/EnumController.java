@@ -51,4 +51,17 @@ public class EnumController {
     public Specialization[] getSpecializations() {
         return Specialization.values();
     }
+    @GetMapping("/medicine-categories")
+    public MedicineCategory[] getAllMedicineCategory(){
+        return  MedicineCategory.values();
+    }
+
+    @GetMapping("/batch-status")
+    public BatchStatus[] getBatchStatus(){
+        return BatchStatus.values();
+    }
+    @GetMapping("/medicine-forms")
+    public Route[] getMedicineFormRoute(){
+        return Route.values();
+    }
 }

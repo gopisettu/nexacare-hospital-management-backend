@@ -45,6 +45,8 @@ public class SpringSecurityConfig {
 
 
                         .requestMatchers(HttpMethod.GET,"/api/patient/get-PatientByUsername/{username}").permitAll()
+
+
                         .requestMatchers(HttpMethod.PUT,"/api/patient/update-patientProfile/**").permitAll()
 
                         .requestMatchers(HttpMethod.GET, "/api/patient/searchDoctor-bySpecialization/**").hasAuthority(Role.PATIENT.toString())

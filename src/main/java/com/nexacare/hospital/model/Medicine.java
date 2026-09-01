@@ -7,6 +7,8 @@ import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Setter
@@ -16,7 +18,6 @@ import java.time.Instant;
 @ToString
 @Table(name = "medicine")
 public class Medicine {
-
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -39,4 +40,7 @@ public class Medicine {
 
     @CreationTimestamp
     private Instant createdAt;
+
+    @OneToMany(mappedBy = "medicine")
+    private List<MedicineBatch> batches = new ArrayList<>();
 }

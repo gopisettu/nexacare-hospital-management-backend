@@ -39,7 +39,7 @@ public class PatientController {
   @PostMapping("/loginPatient")
   public TokenDto loginPatient(@Valid @RequestBody
                                LoginDto loginDto){
-        return patientService.loginPatient(loginDto);
+    return patientService.loginPatient(loginDto);
   }
 
 

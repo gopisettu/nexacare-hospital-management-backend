@@ -2,9 +2,11 @@ package com.nexacare.hospital.repositories.Specification;
 
 
 import com.nexacare.hospital.enums.BatchStatus;
+import com.nexacare.hospital.enums.MedicineCategory;
 import com.nexacare.hospital.model.Medicine;
 import com.nexacare.hospital.model.MedicineBatch;
 import jakarta.persistence.criteria.Join;
+import jakarta.persistence.criteria.JoinType;
 import jakarta.persistence.criteria.Predicate;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
@@ -17,7 +19,7 @@ public class MedicineSpecification {
     private MedicineSpecification() {
     }
 
-    public static Specification<MedicineBatch> filterMedicines(
+    public static Specification<Medicine> filterMedicines(
             String search,
             String category,
             BatchStatus batchStatus
@@ -27,42 +29,65 @@ public class MedicineSpecification {
 
             List<Predicate> predicates = new ArrayList<>();
 
-            Join<MedicineBatch, Medicine> medicine = root.join("medicine");
+            /*
+             * Medicine -> MedicineBatch
+             *
+             * LEFT JOIN is important.
+             *
+             * It allows medicines without a batch
+             * to also appear in the result.
+             */
+            Join<Medicine, MedicineBatch> batch =
+                    root.join("batches", JoinType.LEFT);
 
-            // Search by Medicine Name
+            // Search by medicine name
             if (search != null && !search.isBlank()) {
 
                 predicates.add(
                         cb.like(
-                                cb.lower(medicine.get("name")),
+                                cb.lower(root.get("name")),
                                 "%" + search.toLowerCase() + "%"
                         )
                 );
             }
 
-            // Category Filter
+            // Category filter
             if (category != null && !category.isBlank()) {
 
-                predicates.add(
-                        cb.equal(
-                                medicine.get("category"),
-                                category
-                        )
-                );
+                try {
+
+                    MedicineCategory medicineCategory =
+                            MedicineCategory.valueOf(
+                                    category.toUpperCase()
+                            );
+
+                    predicates.add(
+                            cb.equal(
+                                    root.get("category"),
+                                    medicineCategory
+                            )
+                    );
+
+                } catch (IllegalArgumentException e) {
+
+                    return cb.disjunction();
+                }
             }
 
-            // Batch Status Filter
+            // Batch status filter
             if (batchStatus != null) {
 
                 predicates.add(
                         cb.equal(
-                                root.get("batchStatus"),
+                                batch.get("batchStatus"),
                                 batchStatus
                         )
                 );
             }
 
-            return cb.and(predicates.toArray(new Predicate[0]));
+            return cb.and(
+                    predicates.toArray(new Predicate[0])
+            );
         };
     }
 
@@ -72,29 +97,28 @@ public class MedicineSpecification {
             return Sort.unsorted();
         }
 
-        return switch (sortOption) {
+        return switch (sortOption.toUpperCase()) {
 
             case "EXPIRY_ASC" ->
-                    Sort.by("expiryDate").ascending();
+                    Sort.by("batches.expiryDate").ascending();
 
             case "EXPIRY_DESC" ->
-                    Sort.by("expiryDate").descending();
+                    Sort.by("batches.expiryDate").descending();
 
             case "STOCK_LOW" ->
-                    Sort.by("quantityRemaining").ascending();
+                    Sort.by("batches.quantityRemaining").ascending();
 
             case "STOCK_HIGH" ->
-                    Sort.by("quantityRemaining").descending();
+                    Sort.by("batches.quantityRemaining").descending();
 
             case "PRICE_LOW" ->
-                    Sort.by("medicine.unitPrice").ascending();
+                    Sort.by("unitPrice").ascending();
 
             case "PRICE_HIGH" ->
-                    Sort.by("medicine.unitPrice").descending();
+                    Sort.by("unitPrice").descending();
 
             default ->
                     Sort.unsorted();
         };
     }
-
 }

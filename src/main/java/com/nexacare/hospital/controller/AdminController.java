@@ -140,16 +140,24 @@ public UploadDto uploadImageDoctor(@PathVariable long doctorId,
     @GetMapping("/get-allMedicines")
     public Page<MedicineAdminRes> getAllMedicines(
 
-            @RequestParam(defaultValue = "0") Integer page,
-            @RequestParam(defaultValue = "8") Integer size,
+            @RequestParam(defaultValue = "0")
+            Integer page,
 
-            @RequestParam(required = false) String search,
+            @RequestParam(defaultValue = "8")
+            Integer size,
 
-            @RequestParam(required = false) String category,
+            @RequestParam(required = false)
+            String search,
 
-            @RequestParam(required = false) BatchStatus batchStatus,
+            @RequestParam(required = false)
+            String category,
 
-            @RequestParam(required = false) String sortOption
+            @RequestParam(required = false)
+            BatchStatus batchStatus,
+
+            @RequestParam(required = false)
+            String sortOption
+
     ) {
 
         return medicineService.getAllMedicines(
@@ -160,6 +168,5 @@ public UploadDto uploadImageDoctor(@PathVariable long doctorId,
                 batchStatus,
                 sortOption
         );
-
     }
 }
